@@ -81,11 +81,11 @@ process align_DNA_HISAT2 {
    }
 
 workflow align_DNA_HISAT2_workflow {
-   aligner_output_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}" : "${params.output_dir_base}/${params.hisat2_version}/output"
-   aligner_intermediate_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/intermediate" : "${params.output_dir_base}/${params.hisat2_version}/intermediate"
-   aligner_validation_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/validation" : "${params.output_dir_base}/${params.hisat2_version}/validation"
+   aligner_output_dir = "${params.output_dir_base}/${params.hisat2_version}/output"
+   aligner_intermediate_dir = "${params.output_dir_base}/${params.hisat2_version}/intermediate"
+   aligner_validation_dir = "${params.output_dir_base}/${params.hisat2_version}/validation"
    aligner_log_dir = "${params.log_output_dir}/process-log/${params.hisat2_version}"
-   aligner_qc_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/QC" : "${params.output_dir_base}/${params.hisat2_version}/QC"
+   aligner_qc_dir = "${params.output_dir_base}/${params.hisat2_version}/QC"
    take:
       complete_signal //Output bam from previous MarkDuplicatesSpark process to ensure only one Spark process runs at a time
       ich_samples

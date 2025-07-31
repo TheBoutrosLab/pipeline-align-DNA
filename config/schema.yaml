@@ -69,24 +69,10 @@ disable_alt_aware:
   required: true
   default: false
   help: 'BWA-MEM2 defaults to alt-aware mode, set to true to explicitly disable it'
-ucla_cds_registered_dataset_input:
-  type: 'Bool'
-  required: true
-  default: false
-  help: 'If data input fastq files are registered in Boutros Lab'
-ucla_cds_registed_dataset_output:
-  type: 'Bool'
-  required: true
-  default: false
-  help: 'to redirect output files to Boutros Lab data storage'
 patient_id:
   type: 'String'
   required: false
   help: 'Patient ID for saving output bam and log directly to UCLA CDS data storage'
-ucla_cds_technology:
-  type: 'String'
-  required: false
-  help: 'Ex: WGS, WXS'
 input:
   type: 'InputNamespace'
   required: true

@@ -80,11 +80,11 @@ process align_DNA_BWA_MEM2 {
    }
 
 workflow align_DNA_BWA_MEM2_workflow {
-   aligner_output_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.bwa_version}/BAM-${params.bwa_mem2_uuid}" : "${params.output_dir_base}/${params.bwa_version}/output"
-   aligner_intermediate_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.bwa_version}/BAM-${params.bwa_mem2_uuid}/intermediate" : "${params.output_dir_base}/${params.bwa_version}/intermediate"
-   aligner_validation_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.bwa_version}/BAM-${params.bwa_mem2_uuid}/validation" : "${params.output_dir_base}/${params.bwa_version}/validation"
+   aligner_output_dir = "${params.output_dir_base}/${params.bwa_version}/output"
+   aligner_intermediate_dir = "${params.output_dir_base}/${params.bwa_version}/intermediate"
+   aligner_validation_dir = "${params.output_dir_base}/${params.bwa_version}/validation"
    aligner_log_dir = "${params.log_output_dir}/process-log/${params.bwa_version}"
-   aligner_qc_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.bwa_version}/BAM-${params.bwa_mem2_uuid}/QC" : "${params.output_dir_base}/${params.bwa_version}/QC"
+   aligner_qc_dir = "${params.output_dir_base}/${params.bwa_version}/QC"
 
    take:
       ich_samples
