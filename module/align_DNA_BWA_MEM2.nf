@@ -3,7 +3,7 @@
 // here it actually saves cost, time, and memory to directly pipe the output into
 // samtools due to the large size of the uncompressed SAM files.
 include { generate_standard_filename } from '../external/nextflow-modules/modules/common/generate_standardized_filename/main.nf'
-include { run_sort_SAMtools ; run_merge_SAMtools } from './samtools.nf'
+// include { run_sort_SAMtools ; run_merge_SAMtools } from './samtools.nf'
 include {
    run_validate_PipeVal as validate_input_BWA_MEM2
    run_validate_PipeVal as validate_output_BWA_MEM2
@@ -49,21 +49,27 @@ process align_DNA_BWA_MEM2 {
    // output the lane information in the file name to differentiate bewteen aligments of the same
    // sample but different lanes
    output:
-      tuple val(library),
-         val(lane),
-         path("${lane_level_bam}"), emit: bam
+      path("${lane_level_bam}"), emit: bam
 
    script:
 
    lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id, params.sample_id, [additional_information: "${library}-${lane}.bam"])
    alt_aware_option = (params.disable_alt_aware) ? '-j' : ''
 
+   sort_order = (params.mark_duplicates && params.enable_spark) ? "-n" : ""
+
+   if ("-n" == sort_order) {
+      println("Sorting by queryname for MarkDuplicatesSpark (sort_order=${sort_order})")
+   } else {
+      println("Sorting by coordinates (sort_order=${sort_order})")
+   }
+
    """
    set -euo pipefail
 
    bwa-mem2 \
       mem \
-      -t ${task.cpus} \
+      -t \$((${task.cpus}-4)) \
       -M \
       ${alt_aware_option} \
       -R \"@RG\\tID:${header.read_group_identifier}.Seq${header.lane}\\tCN:${header.sequencing_center}\\tLB:${header.library_identifier}\\tPL:${header.platform_technology}\\tPU:${header.platform_unit}\\tSM:${header.sample}\" \
@@ -71,11 +77,11 @@ process align_DNA_BWA_MEM2 {
       ${read1_fastq} \
       ${read2_fastq} | \
    samtools \
-      view \
-      -@ ${task.cpus} \
-      -S \
-      -b > \
-      ${lane_level_bam}
+      sort \
+      -@ 4 \
+      -O bam \
+      -o ${lane_level_bam} \
+      ${sort_order}
    """
    }
 
@@ -111,26 +117,26 @@ workflow align_DNA_BWA_MEM2_workflow {
          ich_reference_index_files.collect()
          )
 
-      run_sort_SAMtools(align_DNA_BWA_MEM2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+   //   run_sort_SAMtools(align_DNA_BWA_MEM2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
 
-      remove_intermediate_files(
-         run_sort_SAMtools.out.bam_for_deletion,
-         "decoy_signal"
-         )
+    //  remove_intermediate_files(
+    //     run_sort_SAMtools.out.bam_for_deletion,
+    //     "decoy_signal"
+    //     )
 
       if (!params.mark_duplicates) {
          // It's possible that run_sort_SAMtools may output multiple BAM files which need to be merged
          // only need to merge when !params.mark_duplicates, since  run_MarkDuplicatesSpark_GATK and run_MarkDuplicate_Picard automatically handle multiple BAMs
-         run_merge_SAMtools(run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+         run_merge_SAMtools(align_DNA_BWA_MEM2.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
          och_bam_index = run_merge_SAMtools.out.merged_bam_index
          och_bam = run_merge_SAMtools.out.merged_bam
       } else {
          if (params.enable_spark) {
-            run_MarkDuplicatesSpark_GATK("completion_placeholder", run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicatesSpark_GATK("completion_placeholder", align_DNA_BWA_MEM2.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
             och_bam = run_MarkDuplicatesSpark_GATK.out.bam
             och_bam_index = run_MarkDuplicatesSpark_GATK.out.bam_index
          } else {
-            run_MarkDuplicate_Picard(run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicate_Picard(align_DNA_BWA_MEM2.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
             och_bam = run_MarkDuplicate_Picard.out.bam
             och_bam_index = run_MarkDuplicate_Picard.out.bam_index
          }
