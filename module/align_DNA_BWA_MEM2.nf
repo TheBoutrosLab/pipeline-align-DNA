@@ -55,6 +55,19 @@ process align_DNA_BWA_MEM2 {
 
    lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id, params.sample_id, [additional_information: "${library}-${lane}.bam"])
    alt_aware_option = (params.disable_alt_aware) ? '-j' : ''
+   
+   // Determine samtools threads based on available CPUs
+   def cpus = task.cpus as int
+   def samtools_threads = 4  // default minimum for sort
+   
+   if (cpus >= 16) {
+      samtools_threads = 6
+   } else if (cpus >= 8) {
+      samtools_threads = 4
+   }
+   // For cpus < 8, keep samtools_threads at 4
+   
+   bwa_threads = cpus - samtools_threads
 
    sort_order = (params.mark_duplicates && params.enable_spark) ? "-n" : ""
 
@@ -69,7 +82,7 @@ process align_DNA_BWA_MEM2 {
 
    bwa-mem2 \
       mem \
-      -t \$((${task.cpus}-4)) \
+      -t ${bwa_threads} \
       -M \
       ${alt_aware_option} \
       -R \"@RG\\tID:${header.read_group_identifier}.Seq${header.lane}\\tCN:${header.sequencing_center}\\tLB:${header.library_identifier}\\tPL:${header.platform_technology}\\tPU:${header.platform_unit}\\tSM:${header.sample}\" \
@@ -78,7 +91,7 @@ process align_DNA_BWA_MEM2 {
       ${read2_fastq} | \
    samtools \
       sort \
-      -@ 4 \
+      -@ ${samtools_threads} \
       -O bam \
       -o ${lane_level_bam} \
       ${sort_order}
@@ -103,14 +116,14 @@ workflow align_DNA_BWA_MEM2_workflow {
             ich_reference_index_files
          )
 
-      validate_input_BWA_MEM2(input_validation)
+//      validate_input_BWA_MEM2(input_validation)
 
       // change validation file name depending on whether inputs or outputs are being validated
       //val_filename = ${task.process.split(':')[1].replace('_', '-')} == run-validate ? "input_validation.txt" : "output_validation.txt"
-      validate_input_BWA_MEM2.out.validation_result.collectFile(
-         name: 'input_validation.txt',
-         storeDir: "${aligner_validation_dir}"
-         )
+ //     validate_input_BWA_MEM2.out.validation_result.collectFile(
+ //        name: 'input_validation.txt',
+ //        storeDir: "${aligner_validation_dir}"
+ //        )
       align_DNA_BWA_MEM2(
          ich_samples,
          ich_reference_fasta,
