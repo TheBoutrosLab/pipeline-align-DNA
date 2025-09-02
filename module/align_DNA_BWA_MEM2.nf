@@ -25,8 +25,12 @@ include { remove_intermediate_files } from '../external/nextflow-modules/modules
       ]
    )
 
-process align_DNA_BWA_MEM2 {
+process align_DNA_BWA_MEM2_dynamic {
    container params.docker_image_bwa_and_samtools
+
+   cpus "${given_cpus}"
+   memory "${given_cpus > 48 ? '144' : (given_cpus == 36 ? '64' : 12 )}.GB"
+
    publishDir path: "${params.output_dir_base}/${params.bwa_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files,
       pattern: "*.bam",
@@ -38,6 +42,7 @@ process align_DNA_BWA_MEM2 {
    tag "${header.sample}-${library}-${lane}"
 
    input:
+   val(given_cpus)
    tuple(val(library),
          val(header),
          val(lane),
@@ -57,46 +62,57 @@ process align_DNA_BWA_MEM2 {
    def is_name_sort = params.mark_duplicates && params.enable_spark
    def sort_order = is_name_sort ? "-n" : ""
 
-   // Dynamic thread allocation based on file size and available CPUs
-   // Kept for later use
-   def samtools_threads
- //  def mem_per_thread
+   // Use the given_cpus input parameter directly to avoid closure issues
+   def cpu_count = given_cpus as Integer
 
+   // Dynamic thread allocation based on available CPUs
+   def samtools_threads
+    
    if (is_name_sort) {
       // Name sorting - less resource intensive
-       if (task.cpus >= 24) {
+       if (cpu_count >= 24) {
            samtools_threads = 3
-       } else if (task.cpus >= 12) {
+       } else if (cpu_count >= 12) {
            samtools_threads = 2
        } else {
            samtools_threads = 1
        }
    } else {
        // Coordinate sorting - more resource intensive
-       if (task.cpus >= 36) {
+       if (cpu_count >= 36) {
+           samtools_threads = 9
+       } else if (cpu_count >= 24) {
            samtools_threads = 6
-       } else if (task.cpus >= 24) {
-           samtools_threads = 4
-       } else if (task.cpus >= 12) {
+       } else if (cpu_count >= 12) {
            samtools_threads = 3
        } else {
            samtools_threads = 2
        }
    }
 
-   def bwa_threads = task.cpus - samtools_threads
-   // Overall, sort uses the maximum of 2 x # of threads or 50% of the available memory
-//   def sort_memory_gb = (task.memory.toGiga() * 0.5).intValue()
-//   mem_per_thread = Math.max(2, (sort_memory_gb / samtools_threads).intValue())
+   def bwa_threads = cpu_count - samtools_threads
+
+   // Calculate memory allocation for samtools sort
+   def total_memory_gb = given_cpus > 48 ? 144 : (given_cpus == 36 ? 64 : given_cpus * 1.8)
+
+   // Calculate total memory for samtools (numeric)
+   def samtools_total_memory_gb = is_name_sort ? 
+       (total_memory_gb * 0.125) : 
+       (total_memory_gb * 0.30)
+
+   // Calculate per-thread memory
+   def samtools_memory_per_thread = Math.max(1, Math.round(samtools_total_memory_gb / samtools_threads))
+   def samtools_memory = "${samtools_memory_per_thread}G"
+
+   // Calculate BWA memory
+   def bwa_memory = Math.round(total_memory_gb - samtools_total_memory_gb)
+   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G, SAM:${Math.round(samtools_total_memory_gb)}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t@${samtools_memory}"
 
    // Generate filenames
-   lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id, 
-                                               params.sample_id, 
+   lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id,
+                                               params.sample_id,
                                                [additional_information: "${library}-${lane}.bam"])
    alt_aware_option = (params.disable_alt_aware) ? '-j' : ''
-
-   // Log resource allocation to main Nextflow log\
-   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${task.cpus} CPUs, ${task.memory}, BWA:${bwa_threads}t, SAM:${samtools_threads}t"
 
    """
    bwa-mem2 mem \\
@@ -110,179 +126,11 @@ process align_DNA_BWA_MEM2 {
    samtools sort \\
       ${sort_order} \\
       -@ ${samtools_threads} \\
+      -m ${samtools_memory} \\
       -O bam \\
       -o ${lane_level_bam}
     """
 }
-
-process align_DNA_BWA_MEM2_medium {
-   container params.docker_image_bwa_and_samtools
-   publishDir path: "${params.output_dir_base}/${params.bwa_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
-      enabled: params.save_intermediate_files,
-      pattern: "*.bam",
-      mode: 'copy'
-
-   ext log_dir: { "${params.bwa_version}/${task.process.split(':')[1].replace('_', '-')}" }
-   ext log_dir_suffix: { "/${library}/${lane}" }
-
-   tag "${header.sample}-${library}-${lane}"
-
-   input:
-   tuple val(library),
-         val(header),
-         val(lane),
-         path(read1_fastq),
-         path(read2_fastq)
-   each path(ref_fasta)
-   path(ich_reference_index_files)
-
-   output:
-   tuple val(library),
-        val(lane),
-        path("${lane_level_bam}"), emit: bam
-
-   script:
-   // MarkDuplicatesSpark uses name sorted, MarkDuplicate_Picard uses coordinate sorted
-   def is_name_sort = params.mark_duplicates && params.enable_spark
-   def sort_order = is_name_sort ? "-n" : ""
-
-   // Dynamic thread allocation based on file size and available CPUs
-   def samtools_threads
-
-   if (is_name_sort) {
-      // Name sorting - less resource intensive
-       if (task.cpus >= 24) {
-           samtools_threads = 3
-       } else if (task.cpus >= 12) {
-           samtools_threads = 2
-       } else {
-           samtools_threads = 1
-       }
-   } else {
-       // Coordinate sorting - more resource intensive
-       if (task.cpus >= 36) {
-           samtools_threads = 6
-       } else if (task.cpus >= 24) {
-           samtools_threads = 4
-       } else if (task.cpus >= 12) {
-           samtools_threads = 3
-       } else {
-           samtools_threads = 2
-       }
-   }
-
-   def bwa_threads = task.cpus - samtools_threads
-
-   // Generate filenames
-   lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id, 
-                                               params.sample_id, 
-                                               [additional_information: "${library}-${lane}.bam"])
-   alt_aware_option = (params.disable_alt_aware) ? '-j' : ''
-
-   // Log resource allocation to main Nextflow log\
-   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${task.cpus} CPUs, ${task.memory}, BWA:${bwa_threads}t, SAM:${samtools_threads}t"
-
-   """
-   bwa-mem2 mem \\
-      -t ${bwa_threads} \\
-      -M \\
-      ${alt_aware_option} \\
-      -R "@RG\\tID:${header.read_group_identifier}.Seq${lane}\\tCN:${header.sequencing_center}\\tLB:${library}\\tPL:${header.platform_technology}\\tPU:${header.platform_unit}\\tSM:${header.sample}" \\
-      ${ref_fasta} \\
-      ${read1_fastq} \\
-      ${read2_fastq} | \\
-   samtools sort \\
-      ${sort_order} \\
-      -@ ${samtools_threads} \\
-      -O bam \\
-      -o ${lane_level_bam}
-    """
-}
-
-process align_DNA_BWA_MEM2_small {
-   container params.docker_image_bwa_and_samtools
-   publishDir path: "${params.output_dir_base}/${params.bwa_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
-      enabled: params.save_intermediate_files,
-      pattern: "*.bam",
-      mode: 'copy'
-
-   ext log_dir: { "${params.bwa_version}/${task.process.split(':')[1].replace('_', '-')}" }
-   ext log_dir_suffix: { "/${library}/${lane}" }
-
-   tag "${header.sample}-${library}-${lane}"
-
-   input:
-   tuple val(library),
-         val(header),
-         val(lane),
-         path(read1_fastq),
-         path(read2_fastq)
-   each path(ref_fasta)
-   path(ich_reference_index_files)
-
-   output:
-   tuple val(library),
-        val(lane),
-        path("${lane_level_bam}"), emit: bam
-
-   script:
-   // MarkDuplicatesSpark uses name sorted, MarkDuplicate_Picard uses coordinate sorted
-   def is_name_sort = params.mark_duplicates && params.enable_spark
-   def sort_order = is_name_sort ? "-n" : ""
-
-   // Dynamic thread allocation based on file size and available CPUs
-   def samtools_threads
-
-   if (is_name_sort) {
-      // Name sorting - less resource intensive
-       if (task.cpus >= 24) {
-           samtools_threads = 3
-       } else if (task.cpus >= 12) {
-           samtools_threads = 2
-       } else {
-           samtools_threads = 1
-       }
-   } else {
-       // Coordinate sorting - more resource intensive
-       if (task.cpus >= 36) {
-           samtools_threads = 6
-       } else if (task.cpus >= 24) {
-           samtools_threads = 4
-       } else if (task.cpus >= 12) {
-           samtools_threads = 3
-       } else {
-           samtools_threads = 2
-       }
-   }
-
-   def bwa_threads = task.cpus - samtools_threads
-
-   // Generate filenames
-   lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id, 
-                                               params.sample_id, 
-                                               [additional_information: "${library}-${lane}.bam"])
-   alt_aware_option = (params.disable_alt_aware) ? '-j' : ''
-
-   // Log resource allocation to main Nextflow log\
-   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${task.cpus} CPUs, ${task.memory}, BWA:${bwa_threads}t, SAM:${samtools_threads}t"
-
-   """
-   bwa-mem2 mem \\
-      -t ${bwa_threads} \\
-      -M \\
-      ${alt_aware_option} \\
-      -R "@RG\\tID:${header.read_group_identifier}.Seq${lane}\\tCN:${header.sequencing_center}\\tLB:${library}\\tPL:${header.platform_technology}\\tPU:${header.platform_unit}\\tSM:${header.sample}" \\
-      ${ref_fasta} \\
-      ${read1_fastq} \\
-      ${read2_fastq} | \\
-   samtools sort \\
-      ${sort_order} \\
-      -@ ${samtools_threads} \\
-      -O bam \\
-      -o ${lane_level_bam}
-    """
-}
-
 
 workflow align_DNA_BWA_MEM2_workflow {
    aligner_output_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.bwa_version}/BAM-${params.bwa_mem2_uuid}" : "${params.output_dir_base}/${params.bwa_version}/output"
@@ -306,13 +154,13 @@ workflow align_DNA_BWA_MEM2_workflow {
 
       // change validation file name depending on whether inputs or outputs are being validated
       //val_filename = ${task.process.split(':')[1].replace('_', '-')} == run-validate ? "input_validation.txt" : "output_validation.txt"
- //     validate_input_BWA_MEM2.out.validation_result.collectFile(
- //        name: 'input_validation.txt',
- //       storeDir: "${aligner_validation_dir}"
- //        )
+//     validate_input_BWA_MEM2.out.validation_result.collectFile(
+//        name: 'input_validation.txt',
+//       storeDir: "${aligner_validation_dir}"
+//        )
 
-        // Calculate sizes
-        samples_with_size = ich_samples.map { library, header, lane, r1, r2 ->
+        // Calculate sizes and determine CPU allocation
+        samples_with_cpus = ich_samples.map { library, header, lane, r1, r2 ->
                 // Use file() constructor to resolve paths and get accurate sizes
                 def r1_file = file(r1)
                 def r2_file = file(r2)
@@ -320,30 +168,27 @@ workflow align_DNA_BWA_MEM2_workflow {
                 def r2_size = r2_file.exists() ? r2_file.size() : 0
                 def total_size_gb = (r1_size + r2_size) / (1024.0 * 1024.0 * 1024.0)
 
-                def size_category =
-                    total_size_gb > 50 ? 'large' :
-                    total_size_gb > 24 ? 'medium' :
-                    'small'
+                // Dynamic CPU allocation: <30GB: 1 c/gb; 30-48GB: 36c; >48GB: 56c
+                def allocated_cpus
+                if (total_size_gb > 48) {
+                    allocated_cpus = 56
+                } else if (total_size_gb >= 30) {
+                    allocated_cpus = 36
+                } else {
+                    allocated_cpus = 12
+                }
 
-                log.info "Readgroup: ${header.sample}-${library}-${lane}, Size: ${total_size_gb.round(2)}GB (R1:${(r1_size/1024/1024/1024).round(2)}GB, R2:${(r2_size/1024/1024/1024).round(2)}GB), Category: ${size_category}"
-                tuple(size_category, library, header, lane, r1, r2)
+                log.info "Readgroup: ${header.sample}-${library}-${lane}, Size: ${total_size_gb.round(2)}GB (R1:${(r1_size/1024/1024/1024).round(2)}GB, R2:${(r2_size/1024/1024/1024).round(2)}GB), Allocated CPUs: ${allocated_cpus}"
+                tuple(allocated_cpus, library, header, lane, r1, r2)
             }
 
-            large_samples = samples_with_size.filter { it[0] == 'large' }.map { it[1..-1] }
-            medium_samples = samples_with_size.filter { it[0] == 'medium' }.map { it[1..-1] }
-            small_samples = samples_with_size.filter { it[0] == 'small' }.map { it[1..-1] }
-
-            // The largest samples use the original process allocations
-            aligned_large = align_DNA_BWA_MEM2(large_samples, ich_reference_fasta, ich_reference_index_files.collect())
-            aligned_medium = align_DNA_BWA_MEM2_medium(medium_samples, ich_reference_fasta, ich_reference_index_files.collect())
-            aligned_small = align_DNA_BWA_MEM2_small(small_samples, ich_reference_fasta, ich_reference_index_files.collect())
-
-            // Combine all BAM outputs from the three processes (extract just the BAM files - 3rd element)
-            all_bam_outputs = aligned_large.bam.map { library, lane, bam -> bam }
-                .mix(
-                    aligned_medium.bam.map { library, lane, bam -> bam },
-                    aligned_small.bam.map { library, lane, bam -> bam }
-                )
+            // Run alignment with dynamic CPU allocation
+            aligned_bams = align_DNA_BWA_MEM2_dynamic(
+                samples_with_cpus.map { cpus, library, header, lane, r1, r2 -> cpus },
+                samples_with_cpus.map { cpus, library, header, lane, r1, r2 -> tuple(library, header, lane, r1, r2) },
+                ich_reference_fasta, 
+                ich_reference_index_files.collect()
+            )
 
    //   run_sort_SAMtools(align_DNA_BWA_MEM2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
 
@@ -351,6 +196,8 @@ workflow align_DNA_BWA_MEM2_workflow {
     //     run_sort_SAMtools.out.bam_for_deletion,
     //     "decoy_signal"
     //     )
+      // Get all BAM outputs
+      all_bam_outputs = aligned_bams.bam.map { library, lane, bam -> bam }
 
       if (!params.mark_duplicates) {
          // It's possible that run_sort_SAMtools may output multiple BAM files which need to be merged
