@@ -126,7 +126,6 @@ process align_DNA_BWA_MEM2_dynamic {
    samtools sort \\
       ${sort_order} \\
       -@ ${samtools_threads} \\
-      -m ${samtools_memory} \\
       -O bam \\
       -o ${lane_level_bam}
     """
