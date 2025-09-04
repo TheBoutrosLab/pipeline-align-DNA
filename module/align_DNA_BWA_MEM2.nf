@@ -66,47 +66,50 @@ process align_DNA_BWA_MEM2_dynamic {
    def cpu_count = given_cpus as Integer
 
    // Dynamic thread allocation based on available CPUs
-   def samtools_threads
-    
-   if (is_name_sort) {
-      // Name sorting - less resource intensive
-       if (cpu_count >= 24) {
-           samtools_threads = 3
-       } else if (cpu_count >= 12) {
-           samtools_threads = 2
-       } else {
-           samtools_threads = 1
-       }
-   } else {
-       // Coordinate sorting - more resource intensive
-       if (cpu_count >= 36) {
-           samtools_threads = 9
-       } else if (cpu_count >= 24) {
-           samtools_threads = 6
-       } else if (cpu_count >= 12) {
-           samtools_threads = 3
-       } else {
-           samtools_threads = 2
-       }
-   }
+//   def samtools_threads
+//   if (is_name_sort) {
+//      // Name sorting - less resource intensive
+//       if (cpu_count >= 24) {
+//           samtools_threads = 3
+//       } else if (cpu_count >= 12) {
+//           samtools_threads = 2
+//       } else {
+//           samtools_threads = 1
+//       }
+//   } else {
+//       // Coordinate sorting - more resource intensive
+//       if (cpu_count >= 36) {
+//           samtools_threads = 9
+//       } else if (cpu_count >= 24) {
+//           samtools_threads = 6
+//       } else if (cpu_count >= 12) {
+//           samtools_threads = 3
+//       } else {
+//           samtools_threads = 2
+//       }
+//   }
+   def samtools_threads = cpu_count
 
-   def bwa_threads = cpu_count - samtools_threads
+//   def bwa_threads = cpu_count - samtools_threads
+   def bwa_threads = cpu_count
 
    // Calculate memory allocation for samtools sort
    def total_memory_gb = given_cpus > 48 ? 144 : (given_cpus == 36 ? 64 : given_cpus * 1.8)
 
-   // Calculate total memory for samtools (numeric)
-   def samtools_total_memory_gb = is_name_sort ? 
-       (total_memory_gb * 0.125) : 
-       (total_memory_gb * 0.30)
+//   // Calculate total memory for samtools (numeric)
+//   def samtools_total_memory_gb = is_name_sort ? 
+//       (total_memory_gb * 0.125) : 
+//       (total_memory_gb * 0.30)
 
-   // Calculate per-thread memory
-   def samtools_memory_per_thread = Math.max(1, Math.round(samtools_total_memory_gb / samtools_threads))
-   def samtools_memory = "${samtools_memory_per_thread}G"
+//   // Calculate per-thread memory
+//   def samtools_memory_per_thread = Math.max(1, Math.round(samtools_total_memory_gb / samtools_threads))
+//   def samtools_memory = "${samtools_memory_per_thread}G"
 
    // Calculate BWA memory
-   def bwa_memory = Math.round(total_memory_gb - samtools_total_memory_gb)
-   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G, SAM:${Math.round(samtools_total_memory_gb)}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t@${samtools_memory}"
+//   def bwa_memory = Math.round(total_memory_gb - samtools_total_memory_gb)
+   def bwa_memory = total_memory_gb
+//   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G, SAM:${Math.round(samtools_total_memory_gb)}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t@${samtools_memory}"
+   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t"
 
    // Generate filenames
    lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id,
