@@ -72,11 +72,11 @@ process align_DNA_BWA_MEM2_dynamic {
    if (is_name_sort) {
       // Name sorting - less resource intensive
        if (cpu_count >= 24) {
-           samtools_threads = 3
+           samtools_threads = 4
        } else if (cpu_count >= 12) {
            samtools_threads = 2
        } else {
-           samtools_threads = 1
+           samtools_threads = 2
        }
    } else {
        // Coordinate sorting - more resource intensive
@@ -160,12 +160,12 @@ workflow align_DNA_BWA_MEM2_workflow {
 
                 // Dynamic CPU allocation: <30GB: 1 c/gb; 30-48GB: 36c; >48GB: 56c
                 def allocated_cpus
-                if (total_size_gb > 48) {
+                if (total_size_gb > 60) {
                     allocated_cpus = 56
                 } else if (total_size_gb >= 28) {
-                    allocated_cpus = 24
+                    allocated_cpus = 14
                 } else {
-                    allocated_cpus = 12
+                    allocated_cpus = 6
                 }
 
                 log.info "Readgroup: ${header.sample}-${library}-${lane}, Size: ${total_size_gb.round(2)}GB (R1:${(r1_size/1024/1024/1024).round(2)}GB, R2:${(r2_size/1024/1024/1024).round(2)}GB), Allocated CPUs: ${allocated_cpus}"
