@@ -29,7 +29,7 @@ process align_DNA_BWA_MEM2_dynamic {
    container params.docker_image_bwa_and_samtools
 
    cpus "${given_cpus}"
-   memory "${given_cpus > 48 ? '144' : (given_cpus == 36 ? '64' : 12 )}.GB"
+   memory "${given_cpus > 48 ? '144' : Math.round(given_cpus * 1.8)}.GB"
 
    publishDir path: "${params.output_dir_base}/${params.bwa_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files,
@@ -58,6 +58,8 @@ process align_DNA_BWA_MEM2_dynamic {
         path("${lane_level_bam}"), emit: bam
 
    script:
+   def total_memory_gb = given_cpus > 48 ? 144 : Math.round(given_cpus * 1.8)
+
    // MarkDuplicatesSpark uses name sorted, MarkDuplicate_Picard uses coordinate sorted
    def is_name_sort = params.mark_duplicates && params.enable_spark
    def sort_order = is_name_sort ? "-n" : ""
@@ -66,50 +68,35 @@ process align_DNA_BWA_MEM2_dynamic {
    def cpu_count = given_cpus as Integer
 
    // Dynamic thread allocation based on available CPUs
-//   def samtools_threads
-//   if (is_name_sort) {
-//      // Name sorting - less resource intensive
-//       if (cpu_count >= 24) {
-//           samtools_threads = 3
-//       } else if (cpu_count >= 12) {
-//           samtools_threads = 2
-//       } else {
-//           samtools_threads = 1
-//       }
-//   } else {
-//       // Coordinate sorting - more resource intensive
-//       if (cpu_count >= 36) {
-//           samtools_threads = 9
-//       } else if (cpu_count >= 24) {
-//           samtools_threads = 6
-//       } else if (cpu_count >= 12) {
-//           samtools_threads = 3
-//       } else {
-//           samtools_threads = 2
-//       }
-//   }
-   def samtools_threads = cpu_count
+   def samtools_threads
+   if (is_name_sort) {
+      // Name sorting - less resource intensive
+       if (cpu_count >= 24) {
+           samtools_threads = 3
+       } else if (cpu_count >= 12) {
+           samtools_threads = 2
+       } else {
+           samtools_threads = 1
+       }
+   } else {
+       // Coordinate sorting - more resource intensive
+       if (cpu_count >= 36) {
+           samtools_threads = 9
+       } else if (cpu_count >= 24) {
+           samtools_threads = 6
+       } else if (cpu_count >= 12) {
+           samtools_threads = 3
+       } else {
+           samtools_threads = 2
+       }
+   }
 
-//   def bwa_threads = cpu_count - samtools_threads
-   def bwa_threads = cpu_count
+   def bwa_threads = cpu_count - samtools_threads
 
-   // Calculate memory allocation for samtools sort
-   def total_memory_gb = given_cpus > 48 ? 144 : (given_cpus == 36 ? 64 : given_cpus * 1.8)
+   def samtools_memory_per_thread = is_name_sort ? 2 : 4
 
-//   // Calculate total memory for samtools (numeric)
-//   def samtools_total_memory_gb = is_name_sort ? 
-//       (total_memory_gb * 0.125) : 
-//       (total_memory_gb * 0.30)
-
-//   // Calculate per-thread memory
-//   def samtools_memory_per_thread = Math.max(1, Math.round(samtools_total_memory_gb / samtools_threads))
-//   def samtools_memory = "${samtools_memory_per_thread}G"
-
-   // Calculate BWA memory
-//   def bwa_memory = Math.round(total_memory_gb - samtools_total_memory_gb)
-   def bwa_memory = total_memory_gb
 //   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G, SAM:${Math.round(samtools_total_memory_gb)}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t@${samtools_memory}"
-   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB (BWA:${bwa_memory}G), BWA:${bwa_threads}t, SAM:${samtools_threads}t"
+   log.info "→ ${task.process} (${header.sample}-${library}-${lane}): ${cpu_count} CPUs, ${total_memory_gb}GB, BWA:${bwa_threads}t, SAM:${samtools_threads}t@${samtools_memory_per_thread}G"
 
    // Generate filenames
    lane_level_bam = generate_standard_filename(params.bwa_version, params.dataset_id,
@@ -129,6 +116,7 @@ process align_DNA_BWA_MEM2_dynamic {
    samtools sort \\
       ${sort_order} \\
       -@ ${samtools_threads} \\
+      -m ${samtools_memory_per_thread}G \\
       -O bam \\
       -o ${lane_level_bam}
     """
@@ -174,8 +162,8 @@ workflow align_DNA_BWA_MEM2_workflow {
                 def allocated_cpus
                 if (total_size_gb > 48) {
                     allocated_cpus = 56
-                } else if (total_size_gb >= 30) {
-                    allocated_cpus = 36
+                } else if (total_size_gb >= 28) {
+                    allocated_cpus = 24
                 } else {
                     allocated_cpus = 12
                 }
