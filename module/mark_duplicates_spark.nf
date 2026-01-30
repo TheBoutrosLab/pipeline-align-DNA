@@ -9,7 +9,7 @@
 */
 process run_MarkDuplicatesSpark_GATK  {
    container params.docker_image_gatk
-   containerOptions "--volume ${params.work_dir}:/temp_dir --volume ${params.spark_temp_dir}:/spark_temp_dir -u nobody"
+   containerOptions "${params.container_mount_flag} ${params.work_dir}:/temp_dir ${params.container_mount_flag} ${params.spark_temp_dir}:/spark_temp_dir ${workflow.profile.contains('docker') ? '-u nobody' : ''}"
 
    publishDir path: "${bam_output_dir}",
       pattern: "*.bam{,.bai}",

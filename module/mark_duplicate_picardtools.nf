@@ -2,7 +2,7 @@
 // mark duplicates with picard
 process run_MarkDuplicate_Picard {
    container params.docker_image_picardtools
-   containerOptions "--volume ${params.work_dir}:/temp_dir"
+   containerOptions "${params.container_mount_flag} ${params.work_dir}:/temp_dir"
 
    publishDir path: "${bam_output_dir}",
       pattern: "*.{bam,bai}",
