@@ -87,6 +87,16 @@ ucla_cds_technology:
   type: 'String'
   required: false
   help: 'Ex: WGS, WXS'
+apptainer_library:
+  type: 'Path'
+  mode: 'r'
+  required: false
+  help: 'Absolute path to Apptainer library directory'
+apptainer_cache:
+  type: 'Path'
+  mode: 'w'
+  required: false
+  help: 'Absolute path to Apptainer cache directory'
 input:
   type: 'InputNamespace'
   required: true
