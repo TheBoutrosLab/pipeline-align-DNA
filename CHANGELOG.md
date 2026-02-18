@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 - Use `TheBoutrosLab` submodules
+- Use `TheBoutrosLab` actions
 
 ## [10.1.0] - 2024-05-15
 ### Changed
