@@ -1,7 +1,7 @@
 # Pipeline-align-DNA
 Call DNA Align Nextflow Pipeline for BWA Alignment of Paired-End Reads
 
-[![GitHub release](https://img.shields.io/github/v/release/uclahs-cds/pipeline-align-DNA)](https://github.com/uclahs-cds/pipeline-align-DNA/actions/workflows/prepare-release.yaml)
+[![GitHub release](https://img.shields.io/github/v/release/TheBoutrosLab/pipeline-align-DNA)](https://github.com/TheBoutrosLab/pipeline-align-DNA/actions/workflows/prepare-release.yaml)
 
 - [Pipeline-align-DNA](#Pipeline-align-DNA)
   - [Overview](#Overview)
@@ -267,7 +267,7 @@ This pipeline was tested using the synthesized SMC-HET dataset as well as a mult
 
 ### Validation Tool
 
-Included is a template for validating your input files. For more information on the tool check out the following link: https://github.com/uclahs-cds/package-PipeVal
+Included is a template for validating your input files. For more information on the tool check out the following link: https://github.com/TheBoutrosLab/package-PipeVal
 
 ---
 
@@ -281,15 +281,15 @@ Daehwan Kim, Ben Langmead, Steven L Salzberg. HISAT: a fast spliced aligner with
 
 ## Discussions 
 
-- [Issue tracker](https://github.com/uclahs-cds/pipeline-align-DNA/issues/) to report errors and enhancement ideas.
-- Discussions can take place in [align-DNA discussions](https://github.com/uclahs-cds/pipeline-align-DNA/discussions/)
-- [align-DNA Pull Requests](https://github.com/uclahs-cds/pipeline-align-DNA/pulls) are also open for discussion.
+- [Issue tracker](https://github.com/TheBoutrosLab/pipeline-align-DNA/issues/) to report errors and enhancement ideas.
+- Discussions can take place in [align-DNA discussions](https://github.com/TheBoutrosLab/pipeline-align-DNA/discussions/)
+- [align-DNA Pull Requests](https://github.com/TheBoutrosLab/pipeline-align-DNA/pulls) are also open for discussion.
 
 ---
 
 ## Contributors
 
-Please see list of [Contributors](https://github.com/uclahs-cds/pipeline-align-DNA/graphs/contributors) at GitHub.
+Please see list of [Contributors](https://github.com/TheBoutrosLab/pipeline-align-DNA/graphs/contributors) at GitHub.
 
 ---
 
