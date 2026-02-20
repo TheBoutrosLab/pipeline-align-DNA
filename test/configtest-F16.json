@@ -32,6 +32,9 @@
     "trace.file"
   ],
   "expected_result": {
+    "apptainer": {
+      "enabled": false
+    },
     "docker": {
       "all_group_ids": "$(for i in `id --real --groups`; do echo -n \"--group-add=$i \"; done)",
       "enabled": true,
@@ -52,6 +55,7 @@
       "bwa_and_samtools_version": "2.2.1_samtools-1.17",
       "bwa_version": "BWA-MEM2-2.2.1",
       "cache_intermediate_pipeline_steps": false,
+      "container_mount_flag": "-v",
       "dataset_id": "0000000",
       "disable_alt_aware": false,
       "docker_container_registry": "ghcr.io/uclahs-cds",
