@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.2.0-rc.2] - 2026-02-20
+
 ## [Unreleaesd]
 
 ### Added
+
 - Documentation of `ucla_cds` parameter
 
 ## [10.2.0-rc.1] - 2026-02-18
@@ -299,6 +302,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [10.0.0-rc.1]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v9.0.0...v10.0.0-rc.1
 [10.1.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.0.0...v10.1.0
 [10.2.0-rc.1]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.1.0...v10.2.0-rc.1
+[10.2.0-rc.2]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/vUnreleaesd...v10.2.0-rc.2
 [4.0.0-beta]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v0.0.1...v4.0.0-beta
 [5.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v4.0.0-beta...v5.0.0
 [6.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v5.0.0...v6.0.0
@@ -317,3 +321,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [8.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v7.3.1...v8.0.0
 [8.1.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v8.0.0...v8.1.0
 [9.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v8.1.0...v9.0.0
+[unreleaesd]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.2.0-rc.1...vUnreleaesd
