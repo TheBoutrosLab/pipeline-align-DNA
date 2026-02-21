@@ -30,6 +30,11 @@
                 "fraction": 1.0,
                 "max": 16
             },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
             "retry_strategy": {
                 "cpus": {
                     "strategy": "subtract",
@@ -135,6 +140,11 @@
                 "min": 32,
                 "fraction": 1.0,
                 "max": 32
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
             },
             "retry_strategy": {
                 "cpus": {
@@ -254,6 +264,11 @@
                 "fraction": 0.78,
                 "max": 56
             },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
             "retry_strategy": {
                 "cpus": {
                     "strategy": "subtract",
@@ -371,6 +386,11 @@
                 "min": 56,
                 "fraction": 0.88,
                 "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
             }
         },
         "align_DNA_HISAT2": {
@@ -471,6 +491,11 @@
                 "min": 56,
                 "fraction": 0.78,
                 "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
             },
             "retry_strategy": {
                 "cpus": {
