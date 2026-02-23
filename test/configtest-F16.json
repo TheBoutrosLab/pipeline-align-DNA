@@ -52,6 +52,40 @@
         "BWA-MEM2",
         "HISAT2"
       ],
+      "base_allocations": {
+        "align_DNA_BWA_MEM2": {
+          "cpus": "16",
+          "memory": "31 GB"
+        },
+        "align_DNA_HISAT2": {
+          "cpus": "16",
+          "memory": "31 GB"
+        },
+        "generate_sha512sum": {
+          "cpus": "1",
+          "memory": "1 GB"
+        },
+        "run_MarkDuplicate_Picard": {
+          "cpus": "1",
+          "memory": "14 GB"
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+          "cpus": "16",
+          "memory": "29 GB"
+        },
+        "run_merge_SAMtools": {
+          "cpus": "8",
+          "memory": "2 GB"
+        },
+        "run_sort_SAMtools": {
+          "cpus": "12",
+          "memory": "15 GB"
+        },
+        "run_validate_PipeVal": {
+          "cpus": "1",
+          "memory": "1 GB"
+        }
+      },
       "bwa_and_samtools_version": "2.2.1_samtools-1.17",
       "bwa_version": "BWA-MEM2-2.2.1",
       "cache_intermediate_pipeline_steps": false,
@@ -90,73 +124,38 @@
       "mark_duplicates": true,
       "max_cpus": "16",
       "max_memory": "31 GB",
+      "max_time": "24d 20h 31m 24s",
       "min_cpus": "1",
       "min_memory": "1 MB",
+      "min_time": "1s",
       "output_dir": "/tmp/outputs",
       "output_dir_base": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard",
       "picardtools_version": "3.1.1",
       "pipeval_version": "4.0.0-rc.2",
-      "proc_resource_params": {
-        "align_DNA_BWA_MEM2": {
-          "cpus": "16",
-          "errorStrategy": "retry",
-          "retry_strategy": {
-            "cpus": {
-              "operand": "8",
-              "strategy": "subtract"
-            }
-          }
-        },
-        "align_DNA_HISAT2": {
-          "cpus": "16",
-          "errorStrategy": "retry",
-          "retry_strategy": {
-            "cpus": {
-              "operand": "8",
-              "strategy": "subtract"
-            }
-          }
-        },
-        "generate_sha512sum": {
-          "cpus": "1",
-          "memory": "1 GB"
-        },
-        "run_MarkDuplicate_Picard": {
-          "cpus": "1",
-          "memory": "14 GB",
-          "retry_strategy": {
-            "memory": {
-              "operand": "2",
-              "strategy": "exponential"
-            }
-          }
-        },
-        "run_MarkDuplicatesSpark_GATK": {
-          "cpus": "16",
-          "ext": {
-            "retry_codes": [
-              "52"
-            ]
-          },
-          "memory": "29 GB"
-        },
-        "run_merge_SAMtools": {
-          "cpus": "8",
-          "memory": "2 GB"
-        },
-        "run_sort_SAMtools": {
-          "cpus": "12",
-          "memory": "15 GB"
-        },
-        "run_validate_PipeVal": {
-          "cpus": "1",
-          "memory": "1 GB"
-        }
-      },
       "reference_fasta_bwa": "/hot/resource/tool-specific-input/BWA-MEM2-2.2.1/GRCh38-BI-20160721/index/genome.fa",
       "reference_fasta_hisat2": "/hot/resource/reference-genome/GRCh38-BI-20160721/Homo_sapiens_assembly38.fasta",
       "reference_fasta_index_files_bwa": "/hot/resource/tool-specific-input/BWA-MEM2-2.2.1/GRCh38-BI-20160721/index/genome.fa.*",
       "reference_fasta_index_files_hisat2": "/hot/resource/tool-specific-input/HISAT2-2.2.1/GRCh38-BI-20160721/index/Homo_sapiens_assembly38.*.ht2",
+      "retry_information": {
+        "align_DNA_BWA_MEM2": {
+          "cpus": {
+            "operand": "8",
+            "strategy": "subtract"
+          }
+        },
+        "align_DNA_HISAT2": {
+          "cpus": {
+            "operand": "8",
+            "strategy": "subtract"
+          }
+        },
+        "run_MarkDuplicate_Picard": {
+          "memory": {
+            "operand": "2",
+            "strategy": "exponential"
+          }
+        }
+      },
       "sample_id": "a_mini_n2_picard",
       "save_intermediate_files": false,
       "spark_metrics": false,
@@ -270,7 +269,7 @@
           "3": "1",
           "closure": "retry_updater(16, subtract, 8, $task.attempt, cpus)"
         },
-        "errorStrategy": "retry"
+        "memory": "31 GB"
       },
       "withName:align_DNA_HISAT2": {
         "cpus": {
@@ -279,7 +278,7 @@
           "3": "1",
           "closure": "retry_updater(16, subtract, 8, $task.attempt, cpus)"
         },
-        "errorStrategy": "retry"
+        "memory": "31 GB"
       },
       "withName:generate_sha512sum": {
         "cpus": "1",
@@ -319,6 +318,12 @@
     "report": {
       "enabled": true,
       "file": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard/log-align-DNA-VER.SI.ON-19970704T165655Z//nextflow-log/report.html"
+    },
+    "resource_handler": {
+      "handle_resources": "closure()",
+      "set_resource_limit_params": "closure()",
+      "set_retry": "closure()",
+      "setup_retry": "closure()"
     },
     "timeline": {
       "enabled": true,

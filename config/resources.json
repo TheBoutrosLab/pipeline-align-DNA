@@ -1,0 +1,612 @@
+{
+    "f16": {
+        "run_validate_PipeVal": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.06,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.03,
+                "max": "1 GB"
+            }
+        },
+        "generate_sha512sum": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.06,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.03,
+                "max": "1 GB"
+            }
+        },
+        "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 16,
+                "fraction": 1.0,
+                "max": 16
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 8
+                }
+            }
+        },
+        "align_DNA_HISAT2": {
+            "cpus": {
+                "min": 16,
+                "fraction": 1.0,
+                "max": 16
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 8
+                }
+            }
+        },
+        "run_sort_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.75,
+                "max": 12
+            },
+            "memory": {
+                "min": "15 GB",
+                "fraction": 0.49,
+                "max": "15 GB"
+            }
+        },
+        "run_merge_SAMtools": {
+            "cpus": {
+                "min": 8,
+                "fraction": 0.5,
+                "max": 8
+            },
+            "memory": {
+                "min": "2 GB",
+                "fraction": 0.07,
+                "max": "2 GB"
+            }
+        },
+        "run_MarkDuplicate_Picard": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.06,
+                "max": 1
+            },
+            "memory": {
+                "min": "14 GB",
+                "fraction": 0.46,
+                "max": "14 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+            "cpus": {
+                "min": 16,
+                "fraction": 1.0,
+                "max": 16
+            },
+            "memory": {
+                "min": "29 GB",
+                "fraction": 0.95,
+                "max": "29 GB"
+            }
+        }
+    },
+    "f32": {
+        "run_validate_PipeVal": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.03,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.02,
+                "max": "1 GB"
+            }
+        },
+        "generate_sha512sum": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.03,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.02,
+                "max": "1 GB"
+            }
+        },
+        "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 32,
+                "fraction": 1.0,
+                "max": 32
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "align_DNA_HISAT2": {
+            "cpus": {
+                "min": 32,
+                "fraction": 1.0,
+                "max": 32
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "run_sort_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.38,
+                "max": 12
+            },
+            "memory": {
+                "min": "15 GB",
+                "fraction": 0.25,
+                "max": "15 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_merge_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.38,
+                "max": 12
+            },
+            "memory": {
+                "min": "2 GB",
+                "fraction": 0.03,
+                "max": "2 GB"
+            }
+        },
+        "run_MarkDuplicate_Picard": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.03,
+                "max": 1
+            },
+            "memory": {
+                "min": "28 GB",
+                "fraction": 0.46,
+                "max": "28 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+            "cpus": {
+                "min": 16,
+                "fraction": 0.5,
+                "max": 16
+            },
+            "memory": {
+                "min": "35 GB",
+                "fraction": 0.58,
+                "max": "35 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "add",
+                    "operand": "29 GB"
+                }
+            }
+        }
+    },
+    "f72": {
+        "run_validate_PipeVal": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.01,
+                "max": "1 GB"
+            }
+        },
+        "generate_sha512sum": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.01,
+                "max": "1 GB"
+            }
+        },
+        "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "align_DNA_HISAT2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "run_sort_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.17,
+                "max": 12
+            },
+            "memory": {
+                "min": "15 GB",
+                "fraction": 0.11,
+                "max": "15 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_merge_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.17,
+                "max": 12
+            },
+            "memory": {
+                "min": "2 GB",
+                "fraction": 0.01,
+                "max": "2 GB"
+            }
+        },
+        "run_MarkDuplicate_Picard": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "60 GB",
+                "fraction": 0.44,
+                "max": "60 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+            "cpus": {
+                "min": 16,
+                "fraction": 0.22,
+                "max": 16
+            },
+            "memory": {
+                "min": "35 GB",
+                "fraction": 0.26,
+                "max": "35 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "add",
+                    "operand": "95 GB"
+                }
+            }
+        }
+    },
+    "m64": {
+        "run_validate_PipeVal": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.02,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.00,
+                "max": "1 GB"
+            }
+        },
+        "generate_sha512sum": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.02,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.00,
+                "max": "1 GB"
+            }
+        },
+        "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.88,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            }
+        },
+        "align_DNA_HISAT2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.88,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            }
+        },
+        "run_sort_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.19,
+                "max": 12
+            },
+            "memory": {
+                "min": "15 GB",
+                "fraction": 0.02,
+                "max": "15 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_merge_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.19,
+                "max": 12
+            },
+            "memory": {
+                "min": "2 GB",
+                "fraction": 0.00,
+                "max": "2 GB"
+            }
+        },
+        "run_MarkDuplicate_Picard": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.02,
+                "max": 1
+            },
+            "memory": {
+                "min": "10 GB",
+                "fraction": 0.01,
+                "max": "10 GB"
+            }
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+            "cpus": {
+                "min": 16,
+                "fraction": 0.25,
+                "max": 16
+            },
+            "memory": {
+                "min": "35 GB",
+                "fraction": 0.04,
+                "max": "35 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 4
+                }
+            }
+        }
+    },
+    "default": {
+        "run_validate_PipeVal": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.01,
+                "max": "1 GB"
+            }
+        },
+        "generate_sha512sum": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "1 GB",
+                "fraction": 0.01,
+                "max": "1 GB"
+            }
+        },
+        "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "align_DNA_HISAT2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "run_sort_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.17,
+                "max": 12
+            },
+            "memory": {
+                "min": "15 GB",
+                "fraction": 0.11,
+                "max": "15 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_merge_SAMtools": {
+            "cpus": {
+                "min": 12,
+                "fraction": 0.17,
+                "max": 12
+            },
+            "memory": {
+                "min": "2 GB",
+                "fraction": 0.01,
+                "max": "2 GB"
+            }
+        },
+        "run_MarkDuplicate_Picard": {
+            "cpus": {
+                "min": 1,
+                "fraction": 0.01,
+                "max": 1
+            },
+            "memory": {
+                "min": "60 GB",
+                "fraction": 0.44,
+                "max": "60 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "exponential",
+                    "operand": 2
+                }
+            }
+        },
+        "run_MarkDuplicatesSpark_GATK": {
+            "cpus": {
+                "min": 16,
+                "fraction": 0.22,
+                "max": 16
+            },
+            "memory": {
+                "min": "35 GB",
+                "fraction": 0.26,
+                "max": "35 GB"
+            },
+            "retry_strategy": {
+                "memory": {
+                    "strategy": "add",
+                    "operand": "95 GB"
+                }
+            }
+        }
+    }
+}
