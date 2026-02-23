@@ -71,6 +71,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../profiles/">Profiles</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../testing-and-validation/">Testing and Validation</a>
                 </li>
               </ul>
@@ -106,7 +110,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Inputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/uclahs-cds/pipeline-align-DNA/blob/b3e531a762e4ca90381b05aa4755899e609d9222/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/6bcc0022a5589ed4a386722f9ef461e96a417a50/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -117,7 +121,7 @@
                 <h2 id="inputs">Inputs</h2>
 <h3 id="input-csv-fields">Input CSV Fields</h3>
 <blockquote>
-<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/uclahs-cds/pipeline-align-DNA/blob/b3e531a762e4ca90381b05aa4755899e609d9222/input/align-DNA.input.csv">here</a></p>
+<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/6bcc0022a5589ed4a386722f9ef461e96a417a50/input/align-DNA.input.csv">here</a></p>
 </blockquote>
 <table>
 <thead>
@@ -196,7 +200,7 @@
 <td style="text-align: left;"><code>input_csv</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">path</td>
-<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/uclahs-cds/pipeline-align-DNA/blob/b3e531a762e4ca90381b05aa4755899e609d9222/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
+<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/6bcc0022a5589ed4a386722f9ef461e96a417a50/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference_fasta_bwa</code></td>
@@ -342,6 +346,24 @@
 <td style="text-align: left;">string</td>
 <td style="text-align: left;">Registry containing tool Docker images. Default: <code>ghcr.io/uclahs-cds</code></td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>ucla_cds</code></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">boolean</td>
+<td style="text-align: left;">Whether running in UCLAHS-CDS cluster. Set to false for any other environments.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>apptainer_library</code></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">path</td>
+<td style="text-align: left;">Path to readable Apptainer library directory containing any existing Apptainer images.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>apptainer_cache</code></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">path</td>
+<td style="text-align: left;">Path to writeable Apptainer cache directory where images will be cached.</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -373,7 +395,7 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
         <span>
-          <a href="https://github.com/uclahs-cds/pipeline-align-DNA" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
         </span>
     
     

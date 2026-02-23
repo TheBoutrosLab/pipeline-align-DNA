@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Discussions - pipeline-align-DNA</title>
+    <title>Profiles - pipeline-align-DNA</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Discussions";
-        var mkdocs_page_input_path = "discussions.md";
+        var mkdocs_page_name = "Profiles";
+        var mkdocs_page_input_path = "profiles.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -64,8 +64,10 @@
                 <li class="toctree-l1"><a class="reference internal" href="../outputs/">Outputs</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../profiles/">Profiles</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Profiles</a>
+    <ul class="current">
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -76,10 +78,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../references/">References</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Discussions</a>
-    <ul class="current">
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../discussions/">Discussions</a>
                 </li>
               </ul>
               <ul>
@@ -104,7 +104,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Discussions</li>
+      <li class="breadcrumb-item active">Profiles</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/6bcc0022a5589ed4a386722f9ef461e96a417a50/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -114,19 +114,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="discussions">Discussions</h2>
+                <h2 id="profiles">Profiles</h2>
+<p>Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using <code>-profile</code>. Available profiles:</p>
 <ul>
-<li><a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/issues/">Issue tracker</a> to report errors and enhancement ideas.</li>
-<li>Discussions can take place in <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/discussions/">align-DNA discussions</a></li>
-<li><a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/pulls">align-DNA Pull Requests</a> are also open for discussion.</li>
+<li><code>docker</code> - Use Docker as the containerization system</li>
+<li><code>apptainer</code> - Use Apptainer/Singularity as the containerization system</li>
 </ul>
 <hr />
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../references/" class="btn btn-neutral float-left" title="References"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../contributors/" class="btn btn-neutral float-right" title="Contributors">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../outputs/" class="btn btn-neutral float-left" title="Outputs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../testing-and-validation/" class="btn btn-neutral float-right" title="Testing and Validation">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -153,10 +153,10 @@
         </span>
     
     
-      <span><a href="../references/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../outputs/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../contributors/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../testing-and-validation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
