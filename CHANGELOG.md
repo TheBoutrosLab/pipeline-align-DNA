@@ -11,6 +11,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 
 - Use `TheBoutrosLab` PlantUML action
+- Update BWA-MEM2 to `v2.3`
+- Update GATK to `4.6.2.0`
+- Update SAMtools to `v1.23`
+- Update Picard to `v3.4.0`
 
 ## [10.2.0-rc.4] - 2026-02-23
 
