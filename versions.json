@@ -9,11 +9,21 @@
     }
   },
   {
+    "version": "v11.0.0",
+    "title": "v11.0.0",
+    "aliases": [
+      "release-candidate",
+      "latest"
+    ],
+    "properties": {
+      "commit": "7c53a1397555044a07bd74b6a9f36993be33e19a",
+      "date": "2026-04-23T11:28:05-07:00"
+    }
+  },
+  {
     "version": "v10.2.0-rc.4",
     "title": "v10.2.0-rc.4",
-    "aliases": [
-      "release-candidate"
-    ],
+    "aliases": [],
     "properties": {
       "commit": "0dfa50d4e4d5dfed8bee9ee2eddeb46a31543644",
       "date": "2026-02-23T13:57:45-08:00"
@@ -22,9 +32,7 @@
   {
     "version": "v10.1.0",
     "title": "v10.1.0",
-    "aliases": [
-      "latest"
-    ],
+    "aliases": [],
     "properties": {
       "commit": "19fe13b5c8103bb5cd91e97df7525694f2c88ebe",
       "date": "2024-05-15T17:10:27-07:00"
