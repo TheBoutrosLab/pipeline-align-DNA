@@ -7,27 +7,15 @@ include { run_sort_SAMtools ; run_merge_SAMtools} from './samtools.nf'
 include {
    run_validate_PipeVal as validate_input_HISAT2
    run_validate_PipeVal as validate_output_HISAT2
-   } from '../external/nextflow-modules/modules/PipeVal/validate/main.nf' addParams(
-         options: [
-            log_output_dir: "${params.log_output_dir}/process-log/${params.hisat2_version}",
-            docker_image_version: params.pipeval_version,
-            main_process: "./"
-            ]
-      )
+   } from '../external/nextflow-modules/modules/PipeVal/validate/main.nf'
 include { run_MarkDuplicate_Picard } from './mark_duplicate_picardtools.nf'
 include { run_MarkDuplicatesSpark_GATK } from './mark_duplicates_spark.nf'
 include { generate_sha512sum } from './check_512sum.nf'
-include { remove_intermediate_files } from '../external/nextflow-modules/modules/common/intermediate_file_removal/main.nf' addParams(
-   options: [
-      save_intermediate_files: params.save_intermediate_files,
-      output_dir: params.output_dir_base,
-      log_output_dir: "${params.log_output_dir}/process-log/${params.hisat2_version}"
-      ]
-   )
+include { remove_intermediate_files } from '../external/nextflow-modules/modules/common/intermediate_file_removal/main.nf'
 
 process align_DNA_HISAT2 {
    container params.docker_image_hisat2_and_samtools
-   publishDir path: "${params.output_dir_base}/${params.hisat2_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
+   publishDir path: "${META.output_dir_base}/${params.hisat2_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files,
       pattern: "*.bam",
       mode: 'copy'
@@ -37,6 +25,7 @@ process align_DNA_HISAT2 {
 
    // use "each" so the the reference files are passed through for each fastq pair alignment
    input:
+      val(META)
       tuple(val(library),
          val(header),
          val(lane),
@@ -81,11 +70,13 @@ process align_DNA_HISAT2 {
    }
 
 workflow align_DNA_HISAT2_workflow {
-   aligner_output_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}" : "${params.output_dir_base}/${params.hisat2_version}/output"
-   aligner_intermediate_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/intermediate" : "${params.output_dir_base}/${params.hisat2_version}/intermediate"
-   aligner_validation_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/validation" : "${params.output_dir_base}/${params.hisat2_version}/validation"
-   aligner_log_dir = "${params.log_output_dir}/process-log/${params.hisat2_version}"
-   aligner_qc_dir = (params.ucla_cds_registered_dataset_output) ? "${params.output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/QC" : "${params.output_dir_base}/${params.hisat2_version}/QC"
+   aligner_output_dir_base = (params.ucla_cds_registered_dataset_output) ? params["output_dir_base_hisat2"] : params["output_dir_base"]
+   aligner_log_output_dir_base = (params.ucla_cds_registered_dataset_output) ? params["log_output_dir_hisat2"] : params["log_output_dir"]
+   aligner_output_dir = (params.ucla_cds_registered_dataset_output) ? "${aligner_output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}" : "${aligner_output_dir_base}/${params.hisat2_version}/output"
+   aligner_intermediate_dir = (params.ucla_cds_registered_dataset_output) ? "${aligner_output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/intermediate" : "${aligner_output_dir_base}/${params.hisat2_version}/intermediate"
+   aligner_validation_dir = (params.ucla_cds_registered_dataset_output) ? "${aligner_output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/validation" : "${aligner_output_dir_base}/${params.hisat2_version}/validation"
+   aligner_log_dir = "${aligner_log_output_dir_base}/process-log/${params.hisat2_version}"
+   aligner_qc_dir = (params.ucla_cds_registered_dataset_output) ? "${aligner_output_dir_base}/${params.hisat2_version}/BAM-${params.hisat2_uuid}/QC" : "${aligner_output_dir_base}/${params.hisat2_version}/QC"
    take:
       complete_signal //Output bam from previous MarkDuplicatesSpark process to ensure only one Spark process runs at a time
       ich_samples
@@ -93,43 +84,50 @@ workflow align_DNA_HISAT2_workflow {
       ich_reference_fasta
       ich_reference_index_files
    main:
+      aligner_meta = Channel.value([
+         output_dir_base: aligner_output_dir_base,
+         bam_output_filename: "${generate_standard_filename(params.hisat2_version, params.dataset_id, params.sample_id, [:])}.bam",
+         log_output_dir: aligner_log_dir
+         ])
+
       input_validation = ich_samples_validate.mix(
             ich_reference_fasta,
             ich_reference_index_files
          )
-      validate_input_HISAT2(input_validation)
+      validate_input_HISAT2(aligner_meta.combine(input_validation))
 
       validate_input_HISAT2.out.validation_result.collectFile(
          name: 'input_validation.txt',
          storeDir: "${aligner_validation_dir}"
          )
       align_DNA_HISAT2(
+         aligner_meta,
          ich_samples,
          ich_reference_fasta,
          ich_reference_index_files.collect()
          )
-      run_sort_SAMtools(align_DNA_HISAT2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+      run_sort_SAMtools(aligner_meta, align_DNA_HISAT2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
 
       remove_intermediate_files(
-         run_sort_SAMtools.out.bam_for_deletion,
+         aligner_meta.combine(run_sort_SAMtools.out.bam_for_deletion),
          "decoy_signal"
          )
 
       if (!params.mark_duplicates) {
          // It's possible that run_sort_SAMtools may output multiple BAM files which need to be merged
          // only need to merge when !params.mark_duplicates, since  run_MarkDuplicatesSpark_GATK and run_MarkDuplicate_Picard automatically handle multiple BAMs
-         run_merge_SAMtools(run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+         run_merge_SAMtools(aligner_meta, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
          och_bam_index = run_merge_SAMtools.out.merged_bam_index
          och_bam = run_merge_SAMtools.out.merged_bam
 
       } else {
          if (params.enable_spark) {
             //Run MarkduplicatesSpark only after BWA-MEM2 markduplicatesspark completes
-            run_MarkDuplicatesSpark_GATK(complete_signal, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicatesSpark_GATK(aligner_meta, complete_signal, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
             och_bam = run_MarkDuplicatesSpark_GATK.out.bam
             och_bam_index = run_MarkDuplicatesSpark_GATK.out.bam_index
          } else {
-            run_MarkDuplicate_Picard(run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicate_Picard(aligner_meta, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
             och_bam = run_MarkDuplicate_Picard.out.bam
             och_bam_index = run_MarkDuplicate_Picard.out.bam_index
          }
@@ -138,11 +136,10 @@ workflow align_DNA_HISAT2_workflow {
 
       output_validation = och_bam.mix(och_bam_index)
 
-      validate_output_HISAT2(output_validation)
+      validate_output_HISAT2(aligner_meta.combine(output_validation))
 
       validate_output_HISAT2.out.validation_result.collectFile(
          name: 'output_validation.txt',
          storeDir: "${aligner_validation_dir}"
          )
    }
-
