@@ -86,7 +86,12 @@ workflow align_DNA_BWA_MEM2_workflow {
       aligner_meta = Channel.value([
          output_dir_base: aligner_output_dir_base,
          bam_output_filename: "${generate_standard_filename(params.bwa_version, params.dataset_id, params.sample_id, [:])}.bam",
-         log_output_dir: aligner_log_dir
+         bam_output_dir: aligner_output_dir,
+         intermediate_output_dir: aligner_intermediate_dir,
+         validation_output_dir: aligner_validation_dir,
+         log_output_dir: aligner_log_dir,
+         qc_output_dir: aligner_qc_dir,
+         checksum_output_dir: aligner_output_dir
          ])
 
       input_validation = ich_samples_validate.mix(
