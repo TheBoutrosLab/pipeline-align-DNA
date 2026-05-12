@@ -94,7 +94,10 @@ workflow align_DNA_BWA_MEM2_workflow {
             ich_reference_index_files
          )
 
-      validate_input_BWA_MEM2(aligner_meta.combine(input_validation))
+      aligner_meta.map{ aligner_m -> ["docker_image": params.docker_image_validate] + aligner_m }
+         .set{ validate_meta }
+
+      validate_input_BWA_MEM2(validate_meta.combine(input_validation))
 
       // change validation file name depending on whether inputs or outputs are being validated
       //val_filename = ${task.process.split(':')[1].replace('_', '-')} == run-validate ? "input_validation.txt" : "output_validation.txt"
