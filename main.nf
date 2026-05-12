@@ -47,17 +47,8 @@ log.info """\
    """
    .stripIndent()
 
-include { generate_standard_filename } from './external/nextflow-modules/modules/common/generate_standardized_filename/main.nf'
-include { align_DNA_BWA_MEM2_workflow } from './module/align_DNA_BWA_MEM2.nf' addParams(
-    bam_output_filename: "${generate_standard_filename(params.bwa_version, params.dataset_id, params.sample_id, [:])}.bam",
-    output_dir_base: (params.ucla_cds_registered_dataset_output) ? params["output_dir_base_bwa-mem2"] : params["output_dir_base"],
-    log_output_dir: (params.ucla_cds_registered_dataset_output) ? params["log_output_dir_bwa-mem2"] : params["log_output_dir"]
-)
-include { align_DNA_HISAT2_workflow } from './module/align_DNA_HISAT2.nf' addParams(
-    bam_output_filename: "${generate_standard_filename(params.hisat2_version, params.dataset_id, params.sample_id, [:])}.bam",
-    output_dir_base: (params.ucla_cds_registered_dataset_output) ? params["output_dir_base_hisat2"] : params["output_dir_base"],
-    log_output_dir: (params.ucla_cds_registered_dataset_output) ? params["log_output_dir_hisat2"] : params["log_output_dir"]
-)
+include { align_DNA_BWA_MEM2_workflow } from './module/align_DNA_BWA_MEM2.nf'
+include { align_DNA_HISAT2_workflow } from './module/align_DNA_HISAT2.nf'
 workflow {
    if (!(params.aligner.contains("BWA-MEM2") || params.aligner.contains("HISAT2"))) {
       throw new Exception('ERROR: Please specify at least one valid aligner! Options: BWA-MEM2, HISAT2')
