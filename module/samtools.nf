@@ -4,24 +4,22 @@ include { generate_standard_filename } from '../external/nextflow-modules/module
 process run_sort_SAMtools  {
    container params.docker_image_samtools
    
-   publishDir path: "${intermediate_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
+   publishDir path: "${META.intermediate_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files && params.mark_duplicates,
       pattern: "*sorted.bam",
       mode: 'copy'
 
-   publishDir path: "${log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
+   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
       pattern: ".command.*",
       mode: "copy",
       saveAs: { "${library}/${lane}/log${file(it).getName()}" }
 
    input:
+      val(META)
       tuple(val(library), 
          val(lane),
          path(input_bam)
          )
-      val(bam_output_dir)
-      val(intermediate_output_dir)
-      val(log_output_dir)
    
    /** the first value of the tuple will be used as a key to group aligned and filtered bams
    * from the same sample and library but different lane together
@@ -37,7 +35,7 @@ process run_sort_SAMtools  {
 
    script:
 
-   bam_output_filename = params.bam_output_filename.replaceAll('.bam$', "_${library}-${lane}-sorted.bam")
+   bam_output_filename = META.bam_output_filename.replaceAll('.bam$', "_${library}-${lane}-sorted.bam")
    
    /** 
    Determine sort order based on markduplicates process: queryname for spark and coordinate for Picard
@@ -74,21 +72,19 @@ and run_MarkDuplicate_Picard automatically handle multiple BAMs.
 process run_merge_SAMtools  {
    container params.docker_image_samtools
    
-   publishDir path: "${bam_output_dir}",
+   publishDir path: "${META.bam_output_dir}",
       pattern: "${merged_bam_output_filename}{,.bai}",
       mode: 'copy'
 
-   publishDir path: "${log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
+   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
       pattern: ".command.*",
       mode: "copy",
       saveAs: { "log${file(it).getName()}" }
 
    input:
       // outputs from run_sort_SAMtools
+      val(META)
       path(bam) // bam file(s)
-      val(bam_output_dir) //directory of bam
-      val(intermediate_output_dir)
-      val(log_output_dir)
    
    output:
       path "${merged_bam_output_filename}", emit: merged_bam
@@ -97,7 +93,7 @@ process run_merge_SAMtools  {
 
    script:
 
-   merged_bam_output_filename = "${params.bam_output_filename}"
+   merged_bam_output_filename = "${META.bam_output_filename}"
 
    """
    set -euo pipefail
@@ -109,4 +105,3 @@ process run_merge_SAMtools  {
     ${bam}
    """
    }
-
