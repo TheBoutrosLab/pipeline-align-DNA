@@ -26,6 +26,7 @@ process run_MarkDuplicatesSpark_GATK  {
       saveAs: { "log${file(it).getName()}" }
 
    input:
+      val(META)
       val(completion_signal)
       path(input_bams)
       val(bam_output_dir)
@@ -65,7 +66,7 @@ process run_MarkDuplicatesSpark_GATK  {
       fi"
 
    script:
-   bam_output_filename = "${params.bam_output_filename}"
+   bam_output_filename = "${META.bam_output_filename}"
    include_metrics = params.spark_metrics ? "--metrics-file ${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics" : ""
    """ 
    set -euo pipefail
