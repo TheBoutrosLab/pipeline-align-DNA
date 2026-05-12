@@ -15,6 +15,7 @@ process run_sort_SAMtools  {
       saveAs: { "${library}/${lane}/log${file(it).getName()}" }
 
    input:
+      val(META)
       tuple(val(library), 
          val(lane),
          path(input_bam)
@@ -37,7 +38,7 @@ process run_sort_SAMtools  {
 
    script:
 
-   bam_output_filename = params.bam_output_filename.replaceAll('.bam$', "_${library}-${lane}-sorted.bam")
+   bam_output_filename = META.bam_output_filename.replaceAll('.bam$', "_${library}-${lane}-sorted.bam")
    
    /** 
    Determine sort order based on markduplicates process: queryname for spark and coordinate for Picard
@@ -85,6 +86,7 @@ process run_merge_SAMtools  {
 
    input:
       // outputs from run_sort_SAMtools
+      val(META)
       path(bam) // bam file(s)
       val(bam_output_dir) //directory of bam
       val(intermediate_output_dir)
@@ -97,7 +99,7 @@ process run_merge_SAMtools  {
 
    script:
 
-   merged_bam_output_filename = "${params.bam_output_filename}"
+   merged_bam_output_filename = "${META.bam_output_filename}"
 
    """
    set -euo pipefail
@@ -109,4 +111,3 @@ process run_merge_SAMtools  {
     ${bam}
    """
    }
-
