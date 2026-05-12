@@ -117,7 +117,7 @@ workflow align_DNA_BWA_MEM2_workflow {
          ich_reference_index_files.collect()
          )
 
-      run_sort_SAMtools(aligner_meta, align_DNA_BWA_MEM2.out.bam, aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+      run_sort_SAMtools(aligner_meta, align_DNA_BWA_MEM2.out.bam)
 
       remove_intermediate_files(
          aligner_meta.combine(run_sort_SAMtools.out.bam_for_deletion),
@@ -127,21 +127,21 @@ workflow align_DNA_BWA_MEM2_workflow {
       if (!params.mark_duplicates) {
          // It's possible that run_sort_SAMtools may output multiple BAM files which need to be merged
          // only need to merge when !params.mark_duplicates, since  run_MarkDuplicatesSpark_GATK and run_MarkDuplicate_Picard automatically handle multiple BAMs
-         run_merge_SAMtools(aligner_meta, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir)
+         run_merge_SAMtools(aligner_meta, run_sort_SAMtools.out.bam.collect())
          och_bam_index = run_merge_SAMtools.out.merged_bam_index
          och_bam = run_merge_SAMtools.out.merged_bam
       } else {
          if (params.enable_spark) {
-            run_MarkDuplicatesSpark_GATK(aligner_meta, "completion_placeholder", run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicatesSpark_GATK(aligner_meta, "completion_placeholder", run_sort_SAMtools.out.bam.collect())
             och_bam = run_MarkDuplicatesSpark_GATK.out.bam
             och_bam_index = run_MarkDuplicatesSpark_GATK.out.bam_index
          } else {
-            run_MarkDuplicate_Picard(aligner_meta, run_sort_SAMtools.out.bam.collect(), aligner_output_dir, aligner_intermediate_dir, aligner_log_dir, aligner_qc_dir)
+            run_MarkDuplicate_Picard(aligner_meta, run_sort_SAMtools.out.bam.collect())
             och_bam = run_MarkDuplicate_Picard.out.bam
             och_bam_index = run_MarkDuplicate_Picard.out.bam_index
          }
       }
-      generate_sha512sum(och_bam_index.mix(och_bam), aligner_output_dir)
+      generate_sha512sum(aligner_meta, och_bam_index.mix(och_bam))
 
       output_validation = och_bam.mix(och_bam_index)
 
