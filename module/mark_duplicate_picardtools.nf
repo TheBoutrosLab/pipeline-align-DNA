@@ -20,6 +20,7 @@ process run_MarkDuplicate_Picard {
       saveAs: { "log${file(it).getName()}" }
 
    input:
+      val(META)
       path(input_bams)
       val(bam_output_dir)
       val(intermediate_output_dir)
@@ -35,7 +36,7 @@ process run_MarkDuplicate_Picard {
       path(".command.*")
 
    script:
-   bam_output_filename = "${params.bam_output_filename}"
+   bam_output_filename = "${META.bam_output_filename}"
    
    """ 
    set -euo pipefail
