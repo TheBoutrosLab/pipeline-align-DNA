@@ -94,7 +94,11 @@ workflow align_DNA_HISAT2_workflow {
             ich_reference_fasta,
             ich_reference_index_files
          )
-      validate_input_HISAT2(aligner_meta.combine(input_validation))
+
+      aligner_meta.map{ aligner_m -> ["docker_image": params.docker_image_validate] + aligner_m }
+         .set{ validate_meta }
+
+      validate_input_HISAT2(validate_meta.combine(input_validation))
 
       validate_input_HISAT2.out.validation_result.collectFile(
          name: 'input_validation.txt',
@@ -136,7 +140,7 @@ workflow align_DNA_HISAT2_workflow {
 
       output_validation = och_bam.mix(och_bam_index)
 
-      validate_output_HISAT2(aligner_meta.combine(output_validation))
+      validate_output_HISAT2(validate_meta.combine(output_validation))
 
       validate_output_HISAT2.out.validation_result.collectFile(
          name: 'output_validation.txt',

@@ -140,7 +140,7 @@ workflow align_DNA_BWA_MEM2_workflow {
 
       output_validation = och_bam.mix(och_bam_index)
 
-      validate_output_BWA_MEM2(aligner_meta.combine(output_validation))
+      validate_output_BWA_MEM2(validate_meta.combine(output_validation))
 
       validate_output_BWA_MEM2.out.validation_result.collectFile(
          name: 'output_validation.txt',
