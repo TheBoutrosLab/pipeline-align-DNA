@@ -20,10 +20,7 @@ process run_MarkDuplicatesSpark_GATK  {
       mode: 'copy',
       enabled: params.spark_metrics
 
-   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
-      pattern: ".command.*",
-      mode: "copy",
-      saveAs: { "log${file(it).getName()}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 
    input:
       val(META)
@@ -36,7 +33,6 @@ process run_MarkDuplicatesSpark_GATK  {
       path bam_output_filename, emit: bam
       path "*.bai", emit: bam_index
       path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics" optional true
-      path(".command.*")
 
    //Update tempdir permissions for user 'nobody'
    beforeScript "chmod 777 `pwd`; \
