@@ -9,10 +9,8 @@ process run_sort_SAMtools  {
       pattern: "*sorted.bam",
       mode: 'copy'
 
-   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
-      pattern: ".command.*",
-      mode: "copy",
-      saveAs: { "${library}/${lane}/log${file(it).getName()}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" },
+      log_dir_suffix: { "/${library}/${lane}" }
 
    input:
       val(META)
@@ -31,7 +29,6 @@ process run_sort_SAMtools  {
    output:
       path "${bam_output_filename}", emit: bam
       path input_bam, emit: bam_for_deletion
-      path(".command.*")
 
    script:
 
@@ -76,10 +73,7 @@ process run_merge_SAMtools  {
       pattern: "${merged_bam_output_filename}{,.bai}",
       mode: 'copy'
 
-   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
-      pattern: ".command.*",
-      mode: "copy",
-      saveAs: { "log${file(it).getName()}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 
    input:
       // outputs from run_sort_SAMtools
@@ -89,7 +83,6 @@ process run_merge_SAMtools  {
    output:
       path "${merged_bam_output_filename}", emit: merged_bam
       path "${merged_bam_output_filename}.bai", emit: merged_bam_index
-      path(".command.*")
 
    script:
 

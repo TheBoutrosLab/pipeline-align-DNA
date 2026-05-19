@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- Use `methods.setup_process_afterscript()` for process logs
+
 ### Removed
 
 - Usage of `addParams`

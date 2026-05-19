@@ -14,10 +14,7 @@ process run_MarkDuplicate_Picard {
       enabled: params.save_intermediate_files,
       mode: 'copy'
 
-   publishDir path: "${META.log_output_dir}/${task.process.split(':')[-1].replace('_', '-')}",
-      pattern: ".command.*",
-      mode: "copy",
-      saveAs: { "log${file(it).getName()}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 
    input:
       val(META)
@@ -29,7 +26,6 @@ process run_MarkDuplicate_Picard {
       path bam_output_filename, emit: bam
       path "*.bai", emit: bam_index
       path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics"
-      path(".command.*")
 
    script:
    bam_output_filename = "${META.bam_output_filename}"
