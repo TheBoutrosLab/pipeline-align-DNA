@@ -7,6 +7,8 @@ process generate_sha512sum {
       pattern: "*.sha512",
       saveAs: { filename -> (filename.endsWith(".bai.sha512") && !filename.endsWith(".bam.bai.sha512")) ? "${file(file(filename).baseName).baseName}.bam.bai.sha512" : "${filename}"}
 
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}-${task.index}" }
+
    input:
       val(META)
       file(input_file)

@@ -20,8 +20,8 @@ process align_DNA_BWA_MEM2 {
       pattern: "*.bam",
       mode: 'copy'
 
-   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[1].replace('_', '-')}" }
-   ext log_dir_suffix: { "/${library}/${lane}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[1].replace('_', '-')}" },
+      log_dir_suffix: { "/${library}/${lane}" }
 
    // use "each" so the the reference files are passed through for each fastq pair alignment
    input:
