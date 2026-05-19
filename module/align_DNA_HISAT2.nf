@@ -20,7 +20,7 @@ process align_DNA_HISAT2 {
       pattern: "*.bam",
       mode: 'copy'
 
-   ext log_dir: { "${params.hisat2_version}/${task.process.split(':')[1].replace('_', '-')}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[1].replace('_', '-')}" }
    ext log_dir_suffix: { "/${library}/${lane}" }
 
    // use "each" so the the reference files are passed through for each fastq pair alignment
@@ -91,6 +91,7 @@ workflow align_DNA_HISAT2_workflow {
          intermediate_output_dir: aligner_intermediate_dir,
          validation_output_dir: aligner_validation_dir,
          log_output_dir: aligner_log_dir,
+         log_dir_prefix: params.hisat2_version,
          qc_output_dir: aligner_qc_dir,
          checksum_output_dir: aligner_output_dir
          ])
