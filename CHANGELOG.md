@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [11.1.0] - 2026-05-29
 
 ### Changed
 
@@ -336,6 +336,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [10.2.0-rc.3]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.2.0-rc.2...v10.2.0-rc.3
 [10.2.0-rc.4]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.2.0-rc.3...v10.2.0-rc.4
 [11.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v10.2.0-rc.4...v11.0.0
+[11.1.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.0.0...v11.1.0
 [4.0.0-beta]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v0.0.1...v4.0.0-beta
 [5.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v4.0.0-beta...v5.0.0
 [6.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v5.0.0...v6.0.0
