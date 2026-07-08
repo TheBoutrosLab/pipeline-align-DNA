@@ -110,7 +110,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Inputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c79bcef583ccde1c1839a19203f5220313b20a30/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/530e33e742fee0496e5a0d31dbda01a376c03abf/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -121,7 +121,7 @@
                 <h2 id="inputs">Inputs</h2>
 <h3 id="input-csv-fields">Input CSV Fields</h3>
 <blockquote>
-<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c79bcef583ccde1c1839a19203f5220313b20a30/input/align-DNA.input.csv">here</a></p>
+<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/530e33e742fee0496e5a0d31dbda01a376c03abf/input/align-DNA.input.csv">here</a></p>
 </blockquote>
 <table>
 <thead>
@@ -200,7 +200,7 @@
 <td style="text-align: left;"><code>input_csv</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">path</td>
-<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c79bcef583ccde1c1839a19203f5220313b20a30/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
+<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/530e33e742fee0496e5a0d31dbda01a376c03abf/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference_fasta_bwa</code></td>
@@ -363,6 +363,18 @@
 <td style="text-align: left;">no</td>
 <td style="text-align: left;">path</td>
 <td style="text-align: left;">Path to writeable Apptainer cache directory where images will be cached.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>singularity_library</code></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">path</td>
+<td style="text-align: left;">Path to readable Singularity library directory containing any existing Singularity images.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>singularity_cache</code></td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;">path</td>
+<td style="text-align: left;">Path to writeable Singularity cache directory where images will be cached.</td>
 </tr>
 </tbody>
 </table>
