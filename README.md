@@ -197,6 +197,8 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 | `ucla_cds` | no | boolean | Whether running in UCLAHS-CDS cluster. Set to false for any other environments. |
 | `apptainer_library` | no | path | Path to readable Apptainer library directory containing any existing Apptainer images. |
 | `apptainer_cache` | no | path | Path to writeable Apptainer cache directory where images will be cached. |
+| `singularity_library` | no | path | Path to readable Singularity library directory containing any existing Singularity images. |
+| `singularity_cache` | no | path | Path to writeable Singularity cache directory where images will be cached. |
 
 
 ---
@@ -220,7 +222,8 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using `-profile`. Available profiles:
 
 - `docker` - Use Docker as the containerization system
-- `apptainer` - Use Apptainer/Singularity as the containerization system
+- `apptainer` - Use Apptainer as the containerization system
+- `singularity` - Use Singularity as the containerization system
 
 ---
 
