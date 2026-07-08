@@ -327,6 +327,9 @@
       "set_retry": "closure()",
       "setup_retry": "closure()"
     },
+    "singularity": {
+      "enabled": false
+    },
     "timeline": {
       "enabled": true,
       "file": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard/log-align-DNA-VER.SI.ON-19970704T165655Z//nextflow-log/timeline.html"
