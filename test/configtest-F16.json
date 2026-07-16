@@ -98,7 +98,7 @@
       "docker_image_gatk": "broadinstitute/gatk:4.6.2.0",
       "docker_image_hisat2_and_samtools": "ghcr.io/uclahs-cds/hisat2:2.2.1_samtools-1.17",
       "docker_image_picardtools": "ghcr.io/theboutroslab/picard:3.4.0",
-      "docker_image_samtools": "ghcr.io/theboutroslab/samtools:1.23",
+      "docker_image_samtools": "ghcr.io/theboutroslab/samtools:1.24",
       "docker_image_validate": "ghcr.io/uclahs-cds/pipeval:5.2.0",
       "enable_spark": false,
       "gatk_command_mem_diff": "5 GB",
@@ -158,7 +158,7 @@
         }
       },
       "sample_id": "a_mini_n2_picard",
-      "samtools_version": "1.23",
+      "samtools_version": "1.24",
       "save_intermediate_files": false,
       "spark_metrics": false,
       "spark_temp_dir": "/scratch/8543",
