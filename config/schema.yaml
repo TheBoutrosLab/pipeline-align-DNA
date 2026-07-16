@@ -30,10 +30,11 @@ hisat_index_prefix:
 aligner:
   type: 'List'
   required: true
-  help: 'Aligner to be used (Current Options: BWA-MEM2, HISAT2)'
+  help: 'Aligner to be used (Current Options: BWA-MEM2, HISAT2, minibwa)'
   choices:
     - 'BWA-MEM2'
     - 'HISAT2'
+    - 'minibwa'
 output_dir:
   type: 'Path'
   mode: 'w'
