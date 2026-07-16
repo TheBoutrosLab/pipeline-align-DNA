@@ -42,6 +42,24 @@
                 }
             }
         },
+        "align_DNA_minibwa": {
+            "cpus": {
+                "min": 16,
+                "fraction": 1.0,
+                "max": 16
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 8
+                }
+            }
+        },
         "align_DNA_HISAT2": {
             "cpus": {
                 "min": 16,
@@ -141,6 +159,24 @@
             }
         },
         "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 32,
+                "fraction": 1.0,
+                "max": 32
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "align_DNA_minibwa": {
             "cpus": {
                 "min": 32,
                 "fraction": 1.0,
@@ -286,6 +322,24 @@
                 }
             }
         },
+        "align_DNA_minibwa": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
         "align_DNA_HISAT2": {
             "cpus": {
                 "min": 56,
@@ -408,6 +462,18 @@
                 "max": "1000 GB"
             }
         },
+        "align_DNA_minibwa": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.88,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            }
+        },
         "align_DNA_HISAT2": {
             "cpus": {
                 "min": 56,
@@ -507,6 +573,24 @@
             }
         },
         "align_DNA_BWA_MEM2": {
+            "cpus": {
+                "min": 56,
+                "fraction": 0.78,
+                "max": 56
+            },
+            "memory": {
+                "min": "4 GB",
+                "fraction": 1.0,
+                "max": "1000 GB"
+            },
+            "retry_strategy": {
+                "cpus": {
+                    "strategy": "subtract",
+                    "operand": 12
+                }
+            }
+        },
+        "align_DNA_minibwa": {
             "cpus": {
                 "min": 56,
                 "fraction": 0.78,
