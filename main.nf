@@ -40,7 +40,7 @@ log.info """\
 
    Tools Used:
    - BWA-MEM2: ${params.aligner.contains("BWA-MEM2") ? params.docker_image_bwa_and_samtools : "None"}
-   - miniBWA: ${params.aligner.contains("minibwa") ? params.docker_image_minibwa_and_samtools : "None"}
+   - minibwa: ${params.aligner.contains("minibwa") ? params.docker_image_minibwa_and_samtools : "None"}
    - HISAT2:  ${params.aligner.contains("HISAT2") ? params.docker_image_hisat2_and_samtools : "None"}
    - Picard Tools: ${params.docker_image_picardtools}
    - validate: ${params.docker_image_validate}
