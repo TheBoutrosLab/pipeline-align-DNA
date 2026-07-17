@@ -7,7 +7,7 @@ activityDiagram {
     }
 </style>
 start
-if (Is BWA-MEM2, miniBWA, or HISAT2 listed as an aligner?) then (no)
+if (Is BWA-MEM2, minibwa, or HISAT2 listed as an aligner?) then (no)
     #pink :Show error message;
     detach 
 endif
