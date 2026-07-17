@@ -61,6 +61,10 @@
           "cpus": "16",
           "memory": "31 GB"
         },
+        "align_DNA_minibwa": {
+          "cpus": "16",
+          "memory": "31 GB"
+        },
         "generate_sha512sum": {
           "cpus": "1",
           "memory": "1 GB"
@@ -97,6 +101,7 @@
       "docker_image_bwa_and_samtools": "ghcr.io/uclahs-cds/bwa-mem2:2.3_samtools-1.17",
       "docker_image_gatk": "broadinstitute/gatk:4.6.2.0",
       "docker_image_hisat2_and_samtools": "ghcr.io/uclahs-cds/hisat2:2.2.1_samtools-1.17",
+      "docker_image_minibwa_and_samtools": "ghcr.io/theboutroslab/minibwa:0.4_samtools-1.24",
       "docker_image_picardtools": "ghcr.io/theboutroslab/picard:3.4.0",
       "docker_image_samtools": "ghcr.io/theboutroslab/samtools:1.24",
       "docker_image_validate": "ghcr.io/uclahs-cds/pipeval:5.2.0",
@@ -129,6 +134,8 @@
       "min_cpus": "1",
       "min_memory": "1 MB",
       "min_time": "1s",
+      "minibwa_and_samtools_version": "0.4_samtools-1.24",
+      "minibwa_version": "minibwa-0.4",
       "output_dir": "/tmp/outputs",
       "output_dir_base": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard",
       "picardtools_version": "3.4.0",
@@ -145,6 +152,12 @@
           }
         },
         "align_DNA_HISAT2": {
+          "cpus": {
+            "operand": "8",
+            "strategy": "subtract"
+          }
+        },
+        "align_DNA_minibwa": {
           "cpus": {
             "operand": "8",
             "strategy": "subtract"
@@ -274,6 +287,15 @@
         "memory": "31 GB"
       },
       "withName:align_DNA_HISAT2": {
+        "cpus": {
+          "1": "16",
+          "2": "8",
+          "3": "1",
+          "closure": "retry_updater(16, subtract, 8, $task.attempt, cpus)"
+        },
+        "memory": "31 GB"
+      },
+      "withName:align_DNA_minibwa": {
         "cpus": {
           "1": "16",
           "2": "8",

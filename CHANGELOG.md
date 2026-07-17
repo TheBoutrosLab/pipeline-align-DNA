@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- Add `minibwa` aligner
+
 ### Changed
 
 - Update SAMtools to `v1.24`

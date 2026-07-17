@@ -17,6 +17,11 @@ reference_fasta_bwa:
   mode: 'r'
   required: false
   help: 'BWA-MEM2 files'
+reference_fasta_minibwa:
+  type: 'Path'
+  mode: 'r'
+  required: false
+  help: 'minibwa reference FASTA; index files are expected at <reference>.l2b and <reference>.mbw'
 reference_fasta_hisat2:
   type: 'Path'
   mode: 'r'
@@ -30,10 +35,11 @@ hisat_index_prefix:
 aligner:
   type: 'List'
   required: true
-  help: 'Aligner to be used (Current Options: BWA-MEM2, HISAT2)'
+  help: 'Aligner to be used (Current Options: BWA-MEM2, HISAT2, minibwa)'
   choices:
     - 'BWA-MEM2'
     - 'HISAT2'
+    - 'minibwa'
 output_dir:
   type: 'Path'
   mode: 'w'
