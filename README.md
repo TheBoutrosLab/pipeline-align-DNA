@@ -1,5 +1,5 @@
 # Pipeline-align-DNA
-Call DNA Align Nextflow Pipeline for BWA Alignment of Paired-End Reads
+Align paired-end DNA reads with BWA-MEM2, minibwa, or HISAT2
 
 [![GitHub release](https://img.shields.io/github/v/release/TheBoutrosLab/pipeline-align-DNA)](https://github.com/TheBoutrosLab/pipeline-align-DNA/actions/workflows/prepare-release.yaml)
 
@@ -26,7 +26,7 @@ Call DNA Align Nextflow Pipeline for BWA Alignment of Paired-End Reads
    
 ## Overview
 
-The align-DNA Nextflow pipeline, aligns paired-end data utilizing [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2) and/or [HISAT2](http://daehwankimlab.github.io/hisat2/main), [Picard](https://github.com/broadinstitute/picard) Tools and [SAMtools](https://github.com/samtools/samtools). The pipeline has been engineered to run in a 4 layer stack in a cloud-based scalable environment of CycleCloud, Slurm, Nextflow and Docker. Additionally, it has been validated with the SMC-HET dataset and reference GRCh38, where paired-end fastq’s were created with BAM Surgeon.
+The align-DNA Nextflow pipeline aligns paired-end data using [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2), [minibwa](https://github.com/lh3/minibwa), and/or [HISAT2](http://daehwankimlab.github.io/hisat2/main), followed by processing with [Picard](https://github.com/broadinstitute/picard) Tools and [SAMtools](https://github.com/samtools/samtools). The pipeline has been engineered to run in a 4 layer stack in a cloud-based scalable environment of CycleCloud, Slurm, Nextflow and Docker. Additionally, it has been validated with the SMC-HET dataset and reference GRCh38, where paired-end fastq's were created with BAM Surgeon.
 
 The pipeline should be run **WITH A SINGLE SAMPLE AT A TIME**. Otherwise resource allocation and Nextflow errors could cause the pipeline to fail.
 
@@ -35,6 +35,8 @@ The pipeline should be run **WITH A SINGLE SAMPLE AT A TIME**. Otherwise resourc
 > For some reads with low mapping qualities, BWA-MEM2 assigns them to different genomic positions when using different CPU-numbers. If you want to 100% reproduce a run, the same CPU-number (`bwa_mem_number_of_cpus`) needs to be set.
 
 > BWA-MEM2 now only supports five CPU instruction set, AVX, AVX2, AVX512, SSE4.1 and SSE4.2. However we only tested the pipeline on AVX2 and AVX512 CPUs.
+
+> minibwa requires SSE4.2 on x86 CPUs or NEON on ARM CPUs. minibwa currently does not properly support alternate contigs; use a reference without alternate contigs.
 
 > We performed a benchmarking on our SLURM cluster. Using 56 CPUs for alignment (`bwa_mem_number_of_cpus`) gives it the best performance. See [Testing and Validation](#Testing-and-Validation).
 
@@ -80,6 +82,12 @@ nextflow run path/to/generate-genome-index.nf -config path/to/genome-specific.co
 
 > BWA-MEM2 expects the reference genome index to be at the same directory as the reference genome FASTA, so it's important to keep them together.
 
+<b><i> minibwa Genome Index </i></b>
+
+The minibwa reference must be indexed with the same minibwa version used for alignment. Generate the index with `minibwa index reference.fa`. With the pipeline's simple reference contract, do not supply a separate index prefix: the command must produce `reference.fa.l2b` and `reference.fa.mbw` next to the FASTA, and `reference_fasta_minibwa` must point to `reference.fa`. BWA-MEM2 indexes cannot be reused by minibwa.
+
+> minibwa currently does not properly support alternate contigs. Use a reference without alternate contigs.
+
 <b><i> HISAT2 Genome Index </i></b>
 The reference genome index must be generated from HISAT2 using [hisat2-build](http://daehwankimlab.github.io/hisat2/howto/). When passing the hisat2 index to the config, only the path up to the prefix(basename) must be specified:
 
@@ -122,7 +130,7 @@ python path/to/pipeline-align-DNA/script/write_dna_align_config_file.py \
 
 ### 1. Alignment
 
-The first step of the pipeline utilizes [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2) or [HISAT2](http://daehwankimlab.github.io/hisat2/main) to align paired reads. BWA-MEM2 is the successor for the well-known aligner BWA. The bwa-mem2 mem command utilizes the `-M` option for marking shorter splits as secondary. This allows for compatibility with Picard Tools in downstream process and in particular prevents the underlying library of Picard Tools from recognizing these splits as duplicate reads (read names). Additionally, the `-t` option is utilized to increase the number of threads used for alignment. The number of threads used in this step is by default to allow at least 2.5Gb memory per CPU, because of the large memory usage by BWA-MEM2. This can be overwritten by setting the `bwa_mem_number_of_cpus` parameter from the config file.
+The first step uses [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2), [minibwa](https://github.com/lh3/minibwa), or [HISAT2](http://daehwankimlab.github.io/hisat2/main) to align paired reads. BWA-MEM2 is the successor to BWA. Its `mem` command uses `-M` to mark shorter splits as secondary for compatibility with Picard duplicate marking. minibwa uses its `map` command and a minibwa-specific reference index. Each aligner receives the configured process CPU allocation through its threading option.
 
 ### 2. Convert Align SAM File to BAM Format
 
@@ -171,9 +179,10 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 | `sample_name` | yes | string | The sample name. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting `ucla_cds_registered_dataset_output = true` |
 | `input_csv` | yes | path | Absolute path to the input csv. See [here](input/align-DNA.input.csv) for example and above for the detail of required fields. |
 | `reference_fasta_bwa` | yes for BWA-MEM2 | path | Absolute path to the reference genome `fasta` file. The reference genome is used by BWA-MEM2 for alignment. |
+| `reference_fasta_minibwa` | yes for minibwa | path | Absolute path to the reference FASTA and minibwa index prefix. `<reference>.l2b` and `<reference>.mbw` must exist. Use a reference without alternate contigs. |
 | `reference_fasta_hisat2` | yes for HISAT2 | path | Absolute path to the reference genome `fasta` file. The reference genome is used by HISAT2 for alignment. |
 | `hisat2_index_prefix` | yes for HISAT2 | path | Absolute path up to the genome index basename. The index must be generated by the `hisat2-build` command. |
-| `aligner` | yes | list | Which aligners to use as strings in list format. Current options: `BWA-MEM2, HISAT2`. |
+| `aligner` | yes | list | Which aligners to use as strings in list format. Current options: `BWA-MEM2`, `minibwa`, and `HISAT2`. |
 | `output_dir` | yes | path | Absolute path to the directory where the output files to be saved. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting `ucla_cds_registered_dataset_output = true` |
 | `save_intermediate_files` | yes | boolean | Save intermediate files. If yes, not only the final BAM, but also the unmerged, unsorted, and duplicates unmarked BAM files will also be saved. |
 | `cache_intermediate_pipeline_steps` | yes | boolean | Enable cahcing to resume pipeline and the end of the last successful process completion when a pipeline fails (if true the default submission script must be modified). |
@@ -205,7 +214,7 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 
 ## Outputs
 
->Separate folders for each aligner used are created to store bam files while a base folder is used to store overall Nextflow information.
+> Separate BWA-MEM2, minibwa, and HISAT2 folders are created for the selected aligners, while a base folder stores overall Nextflow information.
 
 | Output | Description | Folder |
 |:-------|:------------|:-------|
@@ -279,6 +288,8 @@ Included is a template for validating your input files. For more information on 
 
 Vasimuddin Md, Sanchit Misra, Heng Li, Srinivas Aluru. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. IEEE Parallel and Distributed Processing Symposium (IPDPS), 2019.
 
+Heng Li, Nils Homer. Fast genomic read alignment with minibwa. 2026. <https://github.com/lh3/minibwa>
+
 Daehwan Kim, Ben Langmead, Steven L Salzberg. HISAT: a fast spliced aligner with low memory requirements. Nature Methods, 2015
 
 ---
@@ -303,7 +314,7 @@ Authors: Benjamin Carlin, Chenghao Zhu (ChenghaoZhu@mednet.ucla.edu), Aaron Holm
 
 Align-DNA is licensed under the GNU General Public License version 2. See the file LICENSE for the terms of the GNU GPL license.
 
-Align-DNA aligned paired-end reads using the BWA-MEM2 and/or HISAT2 aligners.
+Align-DNA aligns paired-end reads using the BWA-MEM2, minibwa, and/or HISAT2 aligners.
 
 Copyright (C) 2020-2024 University of California Los Angeles ("Boutros Lab") All rights reserved.
 
