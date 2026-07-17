@@ -116,7 +116,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Pipeline Steps</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4000876db6d7aa9d86eb988b054fc0752362e53a/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/aff042e1e7c34681e2d9e0085eef278b674e9e36/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -126,7 +126,7 @@
               
                 <h2 id="pipeline-steps">Pipeline Steps</h2>
 <h3 id="1-alignment">1. Alignment</h3>
-<p>The first step of the pipeline utilizes <a href="https://github.com/bwa-mem2/bwa-mem2">BWA-MEM2</a> or <a href="http://daehwankimlab.github.io/hisat2/main">HISAT2</a> to align paired reads. BWA-MEM2 is the successor for the well-known aligner BWA. The bwa-mem2 mem command utilizes the <code>-M</code> option for marking shorter splits as secondary. This allows for compatibility with Picard Tools in downstream process and in particular prevents the underlying library of Picard Tools from recognizing these splits as duplicate reads (read names). Additionally, the <code>-t</code> option is utilized to increase the number of threads used for alignment. The number of threads used in this step is by default to allow at least 2.5Gb memory per CPU, because of the large memory usage by BWA-MEM2. This can be overwritten by setting the <code>bwa_mem_number_of_cpus</code> parameter from the config file.</p>
+<p>The first step uses <a href="https://github.com/bwa-mem2/bwa-mem2">BWA-MEM2</a>, <a href="https://github.com/lh3/minibwa">minibwa</a>, or <a href="http://daehwankimlab.github.io/hisat2/main">HISAT2</a> to align paired reads. BWA-MEM2 is the successor to BWA. Its <code>mem</code> command uses <code>-M</code> to mark shorter splits as secondary for compatibility with Picard duplicate marking. minibwa uses its <code>map</code> command and a minibwa-specific reference index. Each aligner receives the configured process CPU allocation through its threading option.</p>
 <h3 id="2-convert-align-sam-file-to-bam-format">2. Convert Align SAM File to BAM Format</h3>
 <p>SAMtools <code>view</code> command is used to convert the aligned SAM files into the compressed BAM format. The SAMtools <code>view</code> command utilizes the <code>-S</code> option for increasing the speed by removing duplicates and outputs the reads as they are ordered in the file.  Additionally, the <code>-b</code> option ensures the output is in BAM format and the <code>-@</code> option is utilized to increase the number of threads.</p>
 <h3 id="3-sort-bam-files-in-coordinate-or-queryname-order">3. Sort BAM Files in Coordinate or Queryname Order</h3>

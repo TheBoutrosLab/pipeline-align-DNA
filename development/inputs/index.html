@@ -110,7 +110,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Inputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4000876db6d7aa9d86eb988b054fc0752362e53a/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/aff042e1e7c34681e2d9e0085eef278b674e9e36/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -121,7 +121,7 @@
                 <h2 id="inputs">Inputs</h2>
 <h3 id="input-csv-fields">Input CSV Fields</h3>
 <blockquote>
-<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4000876db6d7aa9d86eb988b054fc0752362e53a/input/align-DNA.input.csv">here</a></p>
+<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/aff042e1e7c34681e2d9e0085eef278b674e9e36/input/align-DNA.input.csv">here</a></p>
 </blockquote>
 <table>
 <thead>
@@ -200,13 +200,19 @@
 <td style="text-align: left;"><code>input_csv</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">path</td>
-<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4000876db6d7aa9d86eb988b054fc0752362e53a/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
+<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/aff042e1e7c34681e2d9e0085eef278b674e9e36/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference_fasta_bwa</code></td>
 <td style="text-align: left;">yes for BWA-MEM2</td>
 <td style="text-align: left;">path</td>
 <td style="text-align: left;">Absolute path to the reference genome <code>fasta</code> file. The reference genome is used by BWA-MEM2 for alignment.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>reference_fasta_minibwa</code></td>
+<td style="text-align: left;">yes for minibwa</td>
+<td style="text-align: left;">path</td>
+<td style="text-align: left;">Absolute path to the reference FASTA file. minibwa index files must exist at <code>&lt;reference_fasta_minibwa&gt;.l2b</code> and <code>&lt;reference_fasta_minibwa&gt;.mbw</code>. Use a reference without alternate contigs.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference_fasta_hisat2</code></td>
@@ -224,7 +230,7 @@
 <td style="text-align: left;"><code>aligner</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">list</td>
-<td style="text-align: left;">Which aligners to use as strings in list format. Current options: <code>BWA-MEM2, HISAT2</code>.</td>
+<td style="text-align: left;">Which aligners to use as strings in list format. Current options: <code>BWA-MEM2</code>, <code>minibwa</code>, and <code>HISAT2</code>.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>output_dir</code></td>
