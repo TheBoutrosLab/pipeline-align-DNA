@@ -21,7 +21,7 @@ reference_fasta_minibwa:
   type: 'Path'
   mode: 'r'
   required: false
-  help: 'miniBWA reference FASTA; index files are expected at <reference>.l2b and <reference>.mbw'
+  help: 'minibwa reference FASTA; index files are expected at <reference>.l2b and <reference>.mbw'
 reference_fasta_hisat2:
   type: 'Path'
   mode: 'r'
