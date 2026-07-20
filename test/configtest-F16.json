@@ -52,6 +52,16 @@
         "BWA-MEM2",
         "HISAT2"
       ],
+      "aligner_version_params": {
+        "BWA-MEM2": "bwa_version",
+        "HISAT2": "hisat2_version",
+        "minibwa": "minibwa_version"
+      },
+      "aligner_versions": {
+        "BWA-MEM2": "BWA-MEM2-2.3",
+        "HISAT2": "HISAT2-2.2.1",
+        "minibwa": "minibwa-0.4"
+      },
       "base_allocations": {
         "align_DNA_BWA_MEM2": {
           "cpus": "16",
