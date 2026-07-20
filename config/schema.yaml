@@ -27,7 +27,7 @@ reference_fasta_hisat2:
   mode: 'r'
   required: false
   help: 'HISAT2 reference files'
-hisat_index_prefix:
+hisat2_index_prefix:
   type: 'Path'
   mode: 'r'
   required: false
@@ -55,7 +55,7 @@ cache_intermediate_pipeline_steps:
   required: true
   default: false
   help: 'Whether to cache intermediate steps'
-make_duplicates:
+mark_duplicates:
   type: 'Bool'
   required: true
   default: true
@@ -80,7 +80,7 @@ ucla_cds_registered_dataset_input:
   required: true
   default: false
   help: 'If data input fastq files are registered in Boutros Lab'
-ucla_cds_registed_dataset_output:
+ucla_cds_registered_dataset_output:
   type: 'Bool'
   required: true
   default: false
