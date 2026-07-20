@@ -110,7 +110,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Inputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c0a1c9f4d787cfacbcd42fbcee09bd5a29fe37ff/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/e88735ef71c26a9466f1a86a96e9d95d5ec1792d/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -121,7 +121,7 @@
                 <h2 id="inputs">Inputs</h2>
 <h3 id="input-csv-fields">Input CSV Fields</h3>
 <blockquote>
-<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c0a1c9f4d787cfacbcd42fbcee09bd5a29fe37ff/input/align-DNA.input.csv">here</a></p>
+<p>The input csv must have all columns below and in the same order. An example of an input csv can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/e88735ef71c26a9466f1a86a96e9d95d5ec1792d/input/align-DNA.input.csv">here</a></p>
 </blockquote>
 <table>
 <thead>
@@ -191,16 +191,16 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>sample_name</code></td>
+<td style="text-align: left;"><code>sample_id</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">string</td>
-<td style="text-align: left;">The sample name. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting <code>ucla_cds_registered_dataset_output = true</code></td>
+<td style="text-align: left;">Sample ID used in output filenames and output paths.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>input_csv</code></td>
 <td style="text-align: left;">yes</td>
 <td style="text-align: left;">path</td>
-<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/c0a1c9f4d787cfacbcd42fbcee09bd5a29fe37ff/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
+<td style="text-align: left;">Absolute path to the input csv. See <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/e88735ef71c26a9466f1a86a96e9d95d5ec1792d/input/align-DNA.input.csv">here</a> for example and above for the detail of required fields.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference_fasta_bwa</code></td>
@@ -315,12 +315,6 @@
 <td style="text-align: left;">no</td>
 <td style="text-align: left;">string</td>
 <td style="text-align: left;">The registered patient ID of this sample from the Boutros Lab data registry. Ignored if <code>ucla_cds_registered_data_input = true</code> or <code>ucla_cds_registered_output = false</code></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>sample_id</code></td>
-<td style="text-align: left;">no</td>
-<td style="text-align: left;">string</td>
-<td style="text-align: left;">The registered sample ID from the Boutros Lab data registry. Ignored if <code>ucla_cds_registered_data_input = true</code> or <code>ucla_cds_registered_output = false</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>disable_alt_aware</code></td>
