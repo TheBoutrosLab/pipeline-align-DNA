@@ -28,8 +28,7 @@ reference_fasta_hisat2:
   required: false
   help: 'HISAT2 reference files'
 hisat2_index_prefix:
-  type: 'Path'
-  mode: 'r'
+  type: 'String'
   required: false
   help: 'HISAT2 index base name'
 aligner:
