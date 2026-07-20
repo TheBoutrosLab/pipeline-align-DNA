@@ -126,7 +126,6 @@
         ]
       },
       "log_output_dir": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard/log-align-DNA-VER.SI.ON-19970704T165655Z/",
-      "make_duplicates": true,
       "mark_duplicates": true,
       "max_cpus": "16",
       "max_memory": "31 GB",
@@ -177,7 +176,6 @@
       "spark_temp_dir": "/scratch/8543",
       "ucla_cds": true,
       "ucla_cds_analyte": "DNA",
-      "ucla_cds_registed_dataset_output": false,
       "ucla_cds_registered_dataset_input": false,
       "ucla_cds_registered_dataset_output": false,
       "work_dir": "/scratch/8543"
