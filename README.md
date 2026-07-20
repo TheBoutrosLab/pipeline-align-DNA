@@ -176,7 +176,7 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 
 | Input Parameter | Required | Type | Description |
 |:----------------|:---------|:-----|:------------|
-| `sample_name` | yes | string | The sample name. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting `ucla_cds_registered_dataset_output = true` |
+| `sample_id` | yes | string | Sample ID used in output filenames and output paths. |
 | `input_csv` | yes | path | Absolute path to the input csv. See [here](input/align-DNA.input.csv) for example and above for the detail of required fields. |
 | `reference_fasta_bwa` | yes for BWA-MEM2 | path | Absolute path to the reference genome `fasta` file. The reference genome is used by BWA-MEM2 for alignment. |
 | `reference_fasta_minibwa` | yes for minibwa | path | Absolute path to the reference FASTA file. minibwa index files must exist at `<reference_fasta_minibwa>.l2b` and `<reference_fasta_minibwa>.mbw`. Use a reference without alternate contigs. |
@@ -197,7 +197,6 @@ After marking duplicated reads in BAM files, the BAM files are then indexed by u
 | `ucla_cds_registered_dataset_output` | yes | boolean | Enable saving final files including BAM and BAM index, and logging files directory to the Boutros Lab Data registry. |
 | `dataset_id` | no | string | The registered dataset ID of this dataset from the Boutros Lab data registry. Ignored if `ucla_cds_registered_data_input = true` or `ucla_cds_registered_output = false` |
 | `patient_id` | no | string | The registered patient ID of this sample from the Boutros Lab data registry. Ignored if `ucla_cds_registered_data_input = true` or `ucla_cds_registered_output = false` |
-| `sample_id` | no | string | The registered sample ID from the Boutros Lab data registry. Ignored if `ucla_cds_registered_data_input = true` or `ucla_cds_registered_output = false` |
 | `disable_alt_aware` | yes | boolean | Whether to disable the default alt-aware mode for BWA-MEM2. The default behavior of alt-aware mode is to consider the `.alt` file if it exists in the directory with the reference file. |
 | `ucla_cds_data_dir` | no | string | The directory where registered data is located. Default: `/hot/data` |
 | `ucla_cds_reference_genome_version` | no | string | Identifier for the version of the reference genome version |
