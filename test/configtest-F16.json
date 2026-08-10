@@ -60,7 +60,7 @@
       "aligner_versions": {
         "BWA-MEM2": "BWA-MEM2-2.3",
         "HISAT2": "HISAT2-2.2.1",
-        "minibwa": "minibwa-0.4"
+        "minibwa": "minibwa-0.7"
       },
       "base_allocations": {
         "align_DNA_BWA_MEM2": {
@@ -111,7 +111,7 @@
       "docker_image_bwa_and_samtools": "ghcr.io/uclahs-cds/bwa-mem2:2.3_samtools-1.17",
       "docker_image_gatk": "broadinstitute/gatk:4.6.2.0",
       "docker_image_hisat2_and_samtools": "ghcr.io/uclahs-cds/hisat2:2.2.1_samtools-1.17",
-      "docker_image_minibwa_and_samtools": "ghcr.io/theboutroslab/minibwa:0.4_samtools-1.24",
+      "docker_image_minibwa_and_samtools": "ghcr.io/theboutroslab/minibwa:0.7_samtools-1.24",
       "docker_image_picardtools": "ghcr.io/theboutroslab/picard:3.4.0",
       "docker_image_samtools": "ghcr.io/theboutroslab/samtools:1.24",
       "docker_image_validate": "ghcr.io/uclahs-cds/pipeval:5.2.0",
@@ -143,8 +143,8 @@
       "min_cpus": "1",
       "min_memory": "1 MB",
       "min_time": "1s",
-      "minibwa_and_samtools_version": "0.4_samtools-1.24",
-      "minibwa_version": "minibwa-0.4",
+      "minibwa_and_samtools_version": "0.7_samtools-1.24",
+      "minibwa_version": "minibwa-0.7",
       "output_dir": "/tmp/outputs",
       "output_dir_base": "/tmp/outputs/align-DNA-VER.SI.ON/a_mini_n2_picard",
       "picardtools_version": "3.4.0",
