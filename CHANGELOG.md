@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [11.4.0] - 2026-08-10
 
+## [11.4.0] - 2026-08-10
+
 ### Changed
 
 - Update `minibwa` version to `0.7`
@@ -368,6 +370,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [11.2.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.1.0...v11.2.0
 [11.3.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.2.0...v11.3.0
 [11.3.1]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.3.0...v11.3.1
+[11.4.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.4.0...v11.4.0
 [4.0.0-beta]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v0.0.1...v4.0.0-beta
 [5.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v4.0.0-beta...v5.0.0
 [6.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v5.0.0...v6.0.0
