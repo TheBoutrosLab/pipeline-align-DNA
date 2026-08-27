@@ -13,7 +13,7 @@ updates:
           - "*/pipeline-Nextflow-config"
           - "*/pipeline-Nextflow-module"
           - "*/nextflow-config"
-          - "*/nextflow-module"
+          - "*/nextflow-modules"
           - "lib"
   - package-ecosystem: github-actions
     directory: /
