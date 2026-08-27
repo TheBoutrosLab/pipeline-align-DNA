@@ -137,4 +137,8 @@ workflow {
          ich_hisat2_reference_index_files
          )
       }
-   }
+   
+    workflow.onComplete = {
+        WorkflowFinalizer.completeWorkflow(workflow, params);
+    }
+}

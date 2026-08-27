@@ -6,14 +6,13 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      # Group these two modules together for pull requests
+      # Group pipeline modules together for pull requests
       # "pipeline-submodules" is an arbitrary name
       pipeline-submodules:
         patterns:
           - "*/pipeline-Nextflow-config"
           - "*/pipeline-Nextflow-module"
-          - "*/nextflow-config"
-          - "*/nextflow-modules"
+          - "lib"
   - package-ecosystem: github-actions
     directory: /
     schedule:
