@@ -6,3 +6,6 @@
 	path = external/nextflow-config
 	url = git@github.com:TheBoutrosLab/pipeline-Nextflow-config.git
 	branch = main
+[submodule "lib"]
+	path = lib
+	url = git@github.com:TheBoutrosLab/pipeline-Nextflow-lib.git
