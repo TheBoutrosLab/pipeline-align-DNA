@@ -12,8 +12,8 @@
     "version": "v11.5.1",
     "title": "v11.5.1",
     "aliases": [
-      "release-candidate",
-      "latest"
+      "latest",
+      "release-candidate"
     ],
     "properties": {
       "commit": "b32555bf0a813cc1058e32033f728cc3a80e3da8",
