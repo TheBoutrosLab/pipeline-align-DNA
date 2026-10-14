@@ -54,16 +54,22 @@
       ],
       "aligner_version_params": {
         "BWA-MEM2": "bwa_version",
+        "BWA-MEM3": "bwa_mem3_version",
         "HISAT2": "hisat2_version",
         "minibwa": "minibwa_version"
       },
       "aligner_versions": {
         "BWA-MEM2": "BWA-MEM2-2.3",
+        "BWA-MEM3": "BWA-MEM3-0.14.1",
         "HISAT2": "HISAT2-2.2.1",
         "minibwa": "minibwa-0.7"
       },
       "base_allocations": {
         "align_DNA_BWA_MEM2": {
+          "cpus": "16",
+          "memory": "31 GB"
+        },
+        "align_DNA_BWA_MEM3": {
           "cpus": "16",
           "memory": "31 GB"
         },
@@ -101,6 +107,8 @@
         }
       },
       "bwa_and_samtools_version": "2.3_samtools-1.17",
+      "bwa_mem3_and_samtools_version": "0.14.1_samtools-1.24",
+      "bwa_mem3_version": "BWA-MEM3-0.14.1",
       "bwa_version": "BWA-MEM2-2.3",
       "cache_intermediate_pipeline_steps": false,
       "container_mount_flag": "-v",
@@ -109,6 +117,7 @@
       "docker_container_registry_theboutroslab": "ghcr.io/theboutroslab",
       "docker_container_registry_uclahscds": "ghcr.io/uclahs-cds",
       "docker_image_bwa_and_samtools": "ghcr.io/uclahs-cds/bwa-mem2:2.3_samtools-1.17",
+      "docker_image_bwa_mem3_and_samtools": "ghcr.io/theboutroslab/bwa-mem3:0.14.1_samtools-1.24",
       "docker_image_gatk": "broadinstitute/gatk:4.6.2.0",
       "docker_image_hisat2_and_samtools": "ghcr.io/uclahs-cds/hisat2:2.2.1_samtools-1.17",
       "docker_image_minibwa_and_samtools": "ghcr.io/theboutroslab/minibwa:0.7_samtools-1.24",
@@ -155,6 +164,12 @@
       "reference_fasta_index_files_hisat2": "/hot/resource/tool-specific-input/HISAT2-2.2.1/GRCh38-BI-20160721/index/Homo_sapiens_assembly38.*.ht2",
       "retry_information": {
         "align_DNA_BWA_MEM2": {
+          "cpus": {
+            "operand": "8",
+            "strategy": "subtract"
+          }
+        },
+        "align_DNA_BWA_MEM3": {
           "cpus": {
             "operand": "8",
             "strategy": "subtract"
@@ -286,6 +301,15 @@
         }
       },
       "withName:align_DNA_BWA_MEM2": {
+        "cpus": {
+          "1": "16",
+          "2": "8",
+          "3": "1",
+          "closure": "retry_updater(16, subtract, 8, $task.attempt, cpus)"
+        },
+        "memory": "31 GB"
+      },
+      "withName:align_DNA_BWA_MEM3": {
         "cpus": {
           "1": "16",
           "2": "8",
