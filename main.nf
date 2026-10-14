@@ -15,8 +15,8 @@ log.info """\
    - input:
       sample_id: ${params.sample_id}
       input_csv: ${(params.containsKey("input_csv") && params.input_csv) ? params.input_csv : "YAML input used"}
-      reference_fasta_bwa: ${params.aligner.contains("BWA-MEM2") ? params.reference_fasta_bwa : "None"}
-      reference_fasta_index_files_bwa: ${params.aligner.contains("BWA-MEM2") ? params.reference_fasta_index_files_bwa : "None"}
+      reference_fasta_bwa: ${(params.aligner.contains("BWA-MEM2") || params.aligner.contains("BWA-MEM3")) ? params.reference_fasta_bwa : "None"}
+      reference_fasta_index_files_bwa: ${(params.aligner.contains("BWA-MEM2") || params.aligner.contains("BWA-MEM3")) ? params.reference_fasta_index_files_bwa : "None"}
       reference_fasta_minibwa: ${params.aligner.contains("minibwa") ? params.reference_fasta_minibwa : "None"}
       reference_fasta_index_files_minibwa: ${params.aligner.contains("minibwa") ? params.reference_fasta_index_files_minibwa : "None"}
       reference_fasta_hisat2: ${params.aligner.contains("HISAT2") ? params.reference_fasta_hisat2 : "None"}
@@ -26,9 +26,11 @@ log.info """\
       work_dir: ${params.work_dir}
       output_dir: ${params.output_dir}
       output_dir_base_bwa: ${(params.ucla_cds_registered_dataset_output) ? params["output_dir_base_bwa-mem2"] : params["output_dir_base"]}
+      output_dir_base_bwa_mem3: ${(params.ucla_cds_registered_dataset_output) ? params["output_dir_base_bwa-mem3"] : params["output_dir_base"]}
       output_dir_base_minibwa: ${(params.ucla_cds_registered_dataset_output) ? params["output_dir_base_minibwa"] : params["output_dir_base"]}
       output_dir_base_hisat2: ${(params.ucla_cds_registered_dataset_output) ? params["output_dir_base_hisat2"] : params["output_dir_base"]}
       log_output_dir_bwa: ${(params.ucla_cds_registered_dataset_output) ? params["log_output_dir_bwa-mem2"] : params["log_output_dir"]}
+      log_output_dir_bwa_mem3: ${(params.ucla_cds_registered_dataset_output) ? params["log_output_dir_bwa-mem3"] : params["log_output_dir"]}
       log_output_dir_minibwa: ${(params.ucla_cds_registered_dataset_output) ? params["log_output_dir_minibwa"] : params["log_output_dir"]}
       log_output_dir_hisat2: ${(params.ucla_cds_registered_dataset_output) ? params["log_output_dir_hisat2"] : params["log_output_dir"]}
 
@@ -40,6 +42,7 @@ log.info """\
 
    Tools Used:
    - BWA-MEM2: ${params.aligner.contains("BWA-MEM2") ? params.docker_image_bwa_and_samtools : "None"}
+   - BWA-MEM3: ${params.aligner.contains("BWA-MEM3") ? params.docker_image_bwa_mem3_and_samtools : "None"}
    - minibwa: ${params.aligner.contains("minibwa") ? params.docker_image_minibwa_and_samtools : "None"}
    - HISAT2:  ${params.aligner.contains("HISAT2") ? params.docker_image_hisat2_and_samtools : "None"}
    - Picard Tools: ${params.docker_image_picardtools}
@@ -53,11 +56,12 @@ log.info """\
    .stripIndent()
 
 include { align_DNA_BWA_MEM2_workflow } from './module/align_DNA_BWA_MEM2.nf'
+include { align_DNA_BWA_MEM3_workflow } from './module/align_DNA_BWA_MEM3.nf'
 include { align_DNA_minibwa_workflow } from './module/align_DNA_minibwa.nf'
 include { align_DNA_HISAT2_workflow } from './module/align_DNA_HISAT2.nf'
 workflow {
-   if (!(params.aligner.contains("BWA-MEM2") || params.aligner.contains("minibwa") || params.aligner.contains("HISAT2"))) {
-      throw new Exception('ERROR: Please specify at least one valid aligner! Options: BWA-MEM2, minibwa, HISAT2')
+   if (!(params.aligner.contains("BWA-MEM2") || params.aligner.contains("BWA-MEM3") || params.aligner.contains("minibwa") || params.aligner.contains("HISAT2"))) {
+      throw new Exception('ERROR: Please specify at least one valid aligner! Options: BWA-MEM2, BWA-MEM3, minibwa, HISAT2')
       }
 
    // get the input fastq pairs
@@ -83,13 +87,16 @@ workflow {
       .set { ich_samples_validate }
 
    // Only create input channels for files which aligners are using
-   if (params.aligner.contains("BWA-MEM2")) {
+   if (params.aligner.contains("BWA-MEM2") || params.aligner.contains("BWA-MEM3")) {
       Channel
          .fromPath(params.reference_fasta_bwa, checkIfExists: true)
          .set { ich_reference_fasta_bwa }
       Channel
          .fromPath(params.reference_fasta_index_files_bwa, checkIfExists: true)
          .set { ich_bwa_reference_index_files }
+      }
+
+   if (params.aligner.contains("BWA-MEM2")) {
       align_DNA_BWA_MEM2_workflow(
          ich_samples,
          ich_samples_validate,
@@ -102,6 +109,20 @@ workflow {
       bwa_mem2_complete_signal = "bwa_mem2_complete"
       }
 
+   if (params.aligner.contains("BWA-MEM3")) {
+      align_DNA_BWA_MEM3_workflow(
+         bwa_mem2_complete_signal,
+         ich_samples,
+         ich_samples_validate,
+         ich_reference_fasta_bwa,
+         ich_bwa_reference_index_files
+         )
+      bwa_mem3_complete_signal = align_DNA_BWA_MEM3_workflow.out.complete_signal
+      }
+   else {
+      bwa_mem3_complete_signal = bwa_mem2_complete_signal
+      }
+
    if (params.aligner.contains("minibwa")) {
       Channel
          .fromPath(params.reference_fasta_minibwa, checkIfExists: true)
@@ -110,7 +131,7 @@ workflow {
          .fromPath(params.reference_fasta_index_files_minibwa, checkIfExists: true)
          .set { ich_minibwa_reference_index_files }
       align_DNA_minibwa_workflow(
-         bwa_mem2_complete_signal,
+         bwa_mem3_complete_signal,
          ich_samples,
          ich_samples_validate,
          ich_reference_fasta_minibwa,
@@ -119,7 +140,7 @@ workflow {
       minibwa_complete_signal = align_DNA_minibwa_workflow.out.complete_signal
       }
    else {// Pass the prior completion signal through when miniBWA is not selected
-      minibwa_complete_signal = bwa_mem2_complete_signal
+      minibwa_complete_signal = bwa_mem3_complete_signal
       }
 
    if (params.aligner.contains("HISAT2")) {
