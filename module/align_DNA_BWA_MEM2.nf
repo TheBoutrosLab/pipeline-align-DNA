@@ -153,6 +153,6 @@ workflow align_DNA_BWA_MEM2_workflow {
          storeDir: "${aligner_validation_dir}"
          )
 
-      emit:
+   emit:
       complete_signal = och_bam.collect()
    }
