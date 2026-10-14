@@ -60,6 +60,7 @@ if (using HISAT2?) then (yes)
     #lightgreen :Create BAM and BAM index file;
     end group
 endif
+
 legend
     | Color | Process Type |
     | <#White> | Intermediate Step |
