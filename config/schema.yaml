@@ -16,7 +16,7 @@ reference_fasta_bwa:
   type: 'Path'
   mode: 'r'
   required: false
-  help: 'BWA-MEM2 files'
+  help: 'Shared reference FASTA required for BWA-MEM2 or BWA-MEM3; both use reference_fasta_index_files_bwa, defaulting to <reference>.*'
 reference_fasta_minibwa:
   type: 'Path'
   mode: 'r'
@@ -34,9 +34,10 @@ hisat2_index_prefix:
 aligner:
   type: 'List'
   required: true
-  help: 'Aligner to be used (Current Options: BWA-MEM2, HISAT2, minibwa)'
+  help: 'Aligners to use (BWA-MEM2, BWA-MEM3, HISAT2, minibwa); defaults to BWA-MEM2 when omitted'
   choices:
     - 'BWA-MEM2'
+    - 'BWA-MEM3'
     - 'HISAT2'
     - 'minibwa'
 output_dir:
@@ -73,7 +74,7 @@ disable_alt_aware:
   type: 'Bool'
   required: true
   default: false
-  help: 'BWA-MEM2 defaults to alt-aware mode, set to true to explicitly disable it'
+  help: 'BWA-MEM2 and BWA-MEM3 default to alt-aware mode using the shared reference .alt file when present; set to true to disable it'
 ucla_cds_registered_dataset_input:
   type: 'Bool'
   required: true
