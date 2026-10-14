@@ -34,7 +34,8 @@ hisat2_index_prefix:
 aligner:
   type: 'List'
   required: true
-  help: 'Aligners to use (BWA-MEM2, BWA-MEM3, HISAT2, minibwa); defaults to BWA-MEM2 when omitted'
+  allow_empty: false
+  help: 'Required list of aligners to use (BWA-MEM2, BWA-MEM3, HISAT2, minibwa)'
   choices:
     - 'BWA-MEM2'
     - 'BWA-MEM3'
