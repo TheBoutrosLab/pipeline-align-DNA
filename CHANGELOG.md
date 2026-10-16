@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- Update `BWA-MEM3` to `v0.15.0`
+
 ## [11.6.0] - 2026-10-14
 
 ### Added
