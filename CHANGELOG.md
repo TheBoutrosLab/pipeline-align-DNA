@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [11.7.0] - 2026-10-16
+
 ### Changed
 
 - Update `BWA-MEM3` to `v0.15.0`
@@ -403,6 +405,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [11.5.1]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.5.0...v11.5.1
 [11.5.2]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.5.1...v11.5.2
 [11.6.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.5.2...v11.6.0
+[11.7.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.6.0...v11.7.0
 [4.0.0-beta]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v0.0.1...v4.0.0-beta
 [5.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v4.0.0-beta...v5.0.0
 [6.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v5.0.0...v6.0.0
@@ -421,4 +424,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [8.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v7.3.1...v8.0.0
 [8.1.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v8.0.0...v8.1.0
 [9.0.0]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v8.1.0...v9.0.0
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.6.0...HEAD
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-align-DNA/compare/v11.7.0...HEAD
