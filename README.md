@@ -13,8 +13,11 @@ Align paired-end DNA reads with BWA-MEM2, BWA-MEM3, minibwa, or HISAT2
     - [3. Sort BAM Files in Coordinate or Queryname Order](#3-Sort-BAM-Files-In-Coordinate-Or-Queryname-Order)
     - [4. Mark Duplicates in BAM Files](#4-Mark-Duplicates-in-BAM-Files)
     - [5. Index BAM Files](#5-Index-BAM-Files)
+    - [6. Generate Checksums](#6-Generate-Checksums)
+    - [7. Validate Outputs](#7-Validate-Outputs)
   - [Inputs](#Inputs)
   - [Outputs](#Outputs)
+  - [Profiles](#Profiles)
   - [Testing and Validation](#Testing-and-Validation)
     - [Test Data Set](#Test-Data-Set)
     - [Validation <version number\>](#Validation-Version-Number)
@@ -137,6 +140,8 @@ python path/to/pipeline-align-DNA/script/write_dna_align_config_file.py \
 
 ## Pipeline Steps
 
+> Before alignment, the input FASTQs and the reference FASTA and index files for each selected aligner are validated with [PipeVal](https://github.com/TheBoutrosLab/package-PipeVal).
+
 ### 1. Alignment
 
 The first step uses [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2), [BWA-MEM3](https://github.com/fg-labs/bwa-mem3), [minibwa](https://github.com/lh3/minibwa), or [HISAT2](http://daehwankimlab.github.io/hisat2/main) to align paired reads. Both BWA aligners use `mem -M` to mark shorter splits as secondary for compatibility with Picard duplicate marking. minibwa uses its `map` command and a minibwa-specific reference index. HISAT2 is run with `--no-spliced-alignment`; its read group does not include the `CN` (sequencing center) field. Each aligner receives the configured process CPU allocation through its threading option.
@@ -155,11 +160,23 @@ For certain use-cases the pipeline may be configured to skip duplicate marking u
 
 If `mark_duplicates=true` then the next step of the pipeline marks duplicates and merges the lane-level BAM files into a single BAM file. By default (`enable_spark=true`), GATK's `MarkDuplicatesSpark` is used. It matches the output of Picard's `MarkDuplicates` with significant runtime improvements. It is run with `--read-validation-stringency LENIENT` to keep the process running if possible, and `--program-name MarkDuplicatesSpark`. An important note, however, the Spark version requires more disk space and can fail with large inputs with multiple aligners being specified due to insufficient disk space. In such cases, Picard's `MarkDuplicates` should be used instead.
 
+When multiple aligners are selected, alignment and sorting can run concurrently, but `MarkDuplicatesSpark` runs for one aligner at a time, in the order BWA-MEM2, BWA-MEM3, minibwa, HISAT2, with each waiting for the previous aligner to finish duplicate marking.
+
 If `enable_spark=false`, Picard Tool's `MarkDuplicates` command is used. It is run with `--VALIDATION_STRINGENCY LENIENT` to keep the process running if possible, `--ASSUME_SORT_ORDER coordinate`, and `--PROGRAM_RECORD_ID MarkDuplicates`.
 
 ### 5. Index BAM Files
 
 The final BAM files are indexed by using `--CREATE_INDEX true` for Picard's `MarkDuplicates`, `--create-output-bam-index` for `MarkDuplicatesSpark`, or `--write-index` for SAMtools `merge` when `mark_duplicates=false`.
+
+### 6. Generate Checksums
+
+SHA512 checksums are generated for the final BAM and BAM index files with `sha512sum` and saved alongside them.
+
+### 7. Validate Outputs
+
+The final BAM and BAM index files are validated with [PipeVal](https://github.com/TheBoutrosLab/package-PipeVal), and the input and output validation results are saved to the `validation` folder of each aligner.
+
+On successful completion, the per-process log files are archived into a single `process-log.tar.gz` (see [Outputs](#Outputs)).
 
 ---
 
@@ -189,6 +206,7 @@ The final BAM files are indexed by using `--CREATE_INDEX true` for Picard's `Mar
 | `input_csv` | yes, unless a YAML `input` is given | path | Absolute path to the input csv. See [here](input/align-DNA.input.csv) for example and above for the detail of required fields. Alternatively, provide the inputs in YAML format with `-params-file` (see [here](input/align-DNA.input.yaml)). |
 | `dataset_id` | yes | string | Dataset ID used in output filenames. When saving to the Boutros Lab data registry (`ucla_cds_registered_dataset_output = true`), this must be the registered dataset ID. |
 | `reference_fasta_bwa` | yes for BWA-MEM2 or BWA-MEM3 | path | Shared reference FASTA for both BWA aligners. |
+| `reference_fasta_index_files_bwa` | no | path | Glob matching the BWA-MEM2 index files used by both BWA aligners. Default: `<reference_fasta_bwa>.*` |
 | `reference_fasta_minibwa` | yes for minibwa | path | Absolute path to the reference FASTA file. minibwa index files must exist at `<reference_fasta_minibwa>.l2b` and `<reference_fasta_minibwa>.mbw`. Use a reference without alternate contigs. |
 | `reference_fasta_hisat2` | yes for HISAT2 | path | Absolute path to the reference genome `fasta` file. The reference genome is used by HISAT2 for alignment. |
 | `hisat2_index_prefix` | yes for HISAT2 | path | Absolute path up to the genome index basename. The index must be generated by the `hisat2-build` command. |
@@ -204,6 +222,7 @@ The final BAM files are indexed by using `--CREATE_INDEX true` for Picard's `Mar
 | `ucla_cds_registered_dataset_input` | yes | boolean | Input FASTQs are from the Boutros Lab data registry. |
 | `ucla_cds_registered_dataset_output` | yes | boolean | Enable saving final files including BAM and BAM index, and logging files directory to the Boutros Lab Data registry. |
 | `patient_id` | no | string | The registered patient ID of this sample from the Boutros Lab data registry. Required when `ucla_cds_registered_dataset_output = true`; ignored otherwise. |
+| `ucla_cds_technology` | no | string | The sequencing technology of this sample (e.g. `WGS`, `WXS`), used in the Boutros Lab data registry output path. Required when `ucla_cds_registered_dataset_output = true`; ignored otherwise. |
 | `disable_alt_aware` | yes | boolean | Disable alt-aware mode for BWA-MEM2 and BWA-MEM3. Default: false; uses the staged `.alt` file when present. |
 | `ucla_cds_data_dir` | no | string | The directory where registered data is located. Default: `/hot/data` |
 | `ucla_cds_reference_genome_version` | no | string | Identifier for the version of the reference genome version |
@@ -254,8 +273,9 @@ When `ucla_cds_registered_dataset_output = true`, outputs are instead saved to t
 
 ## Profiles
 
-Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using `-profile`. Available profiles:
+Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using `-profile`. When no profile is given, the `standard` profile is used, which runs with Docker. Available profiles:
 
+- `standard` - Default; same as `docker`
 - `docker` - Use Docker as the containerization system
 - `apptainer` - Use Apptainer as the containerization system
 - `singularity` - Use Singularity as the containerization system
@@ -314,9 +334,17 @@ Included is a template for validating your input files. For more information on 
 
 Vasimuddin Md, Sanchit Misra, Heng Li, Srinivas Aluru. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. IEEE Parallel and Distributed Processing Symposium (IPDPS), 2019.
 
+BWA-MEM3. <https://github.com/fg-labs/bwa-mem3>
+
 Heng Li, Nils Homer. Fast genomic read alignment with minibwa. 2026. <https://github.com/lh3/minibwa>
 
 Daehwan Kim, Ben Langmead, Steven L Salzberg. HISAT: a fast spliced aligner with low memory requirements. Nature Methods, 2015
+
+Petr Danecek, James K Bonfield, Jennifer Liddle, John Marshall, Valeriu Ohan, Martin O Pollard, Andrew Whitwham, Thomas Keane, Shane A McCarthy, Robert M Davies, Heng Li. Twelve years of SAMtools and BCFtools. GigaScience, 2021
+
+Picard Toolkit. Broad Institute, GitHub Repository. <https://broadinstitute.github.io/picard/>
+
+Aaron McKenna, Matthew Hanna, Eric Banks, Andrey Sivachenko, Kristian Cibulskis, Andrew Kernytsky, Kiran Garimella, David Altshuler, Stacey Gabriel, Mark Daly, Mark A DePristo. The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. Genome Research, 2010
 
 ---
 
