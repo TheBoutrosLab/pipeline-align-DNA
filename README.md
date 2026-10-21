@@ -16,11 +16,13 @@ Align paired-end DNA reads with BWA-MEM2, BWA-MEM3, minibwa, or HISAT2
     - [6. Generate Checksums](#6-Generate-Checksums)
     - [7. Validate Outputs](#7-Validate-Outputs)
   - [Inputs](#Inputs)
+    - [Input CSV Fields](#Input-CSV-Fields)
+    - [Config File Parameters](#Config-File-Parameters)
   - [Outputs](#Outputs)
   - [Profiles](#Profiles)
   - [Testing and Validation](#Testing-and-Validation)
     - [Test Data Set](#Test-Data-Set)
-    - [Validation <version number\>](#Validation-Version-Number)
+    - [Validation <10.0.0\>](#Validation-1000)
     - [Validation Tool](#Validation-Tool)
   - [References](#References)
   - [Discussions](#Discussions)
@@ -29,9 +31,7 @@ Align paired-end DNA reads with BWA-MEM2, BWA-MEM3, minibwa, or HISAT2
    
 ## Overview
 
-The align-DNA Nextflow pipeline aligns paired-end data using [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2), [BWA-MEM3](https://github.com/fg-labs/bwa-mem3), [minibwa](https://github.com/lh3/minibwa), and/or [HISAT2](http://daehwankimlab.github.io/hisat2/main), followed by processing with [Picard](https://github.com/broadinstitute/picard) Tools and [SAMtools](https://github.com/samtools/samtools). The pipeline has been engineered to run in a 4 layer stack in a cloud-based scalable environment of CycleCloud, Slurm, Nextflow and Docker. Additionally, it has been validated with the SMC-HET dataset and reference GRCh38, where paired-end fastq's were created with BAM Surgeon.
-
-The pipeline should be run **WITH A SINGLE SAMPLE AT A TIME**. Otherwise resource allocation and Nextflow errors could cause the pipeline to fail.
+The align-DNA Nextflow pipeline aligns paired-end data using [BWA-MEM2](https://github.com/bwa-mem2/bwa-mem2), [BWA-MEM3](https://github.com/fg-labs/bwa-mem3), [minibwa](https://github.com/lh3/minibwa), and/or [HISAT2](http://daehwankimlab.github.io/hisat2/main), followed by processing with [Picard](https://github.com/broadinstitute/picard) Tools and [SAMtools](https://github.com/samtools/samtools). The pipeline has been engineered to run in a 4 layer stack in a cloud-based scalable environment of CycleCloud, Slurm, Nextflow and a container runtime (Docker, Apptainer, or Singularity; see [Profiles](#Profiles)). Additionally, it has been validated with the SMC-HET dataset and reference GRCh38, where paired-end fastq's were created with BAM Surgeon.
 
 <b><i>Developer's Notes:</i></b>
 
@@ -52,7 +52,7 @@ Currently supported Nextflow versions: `23.10.0`
 
 Below is a summary of how to run the pipeline.  See [here](https://uclahs-cds.atlassian.net/wiki/spaces/BOUTROSLAB/pages/3197004/How+to+run+a+nextflow+pipeline) for full instructions.
 
-Pipelines should be run **WITH A SINGLE SAMPLE AT TIME**. Otherwise resource allocation and Nextflow errors could cause the pipeline to fail.
+The pipeline should be run **WITH A SINGLE SAMPLE AT A TIME**. Otherwise resource allocation and Nextflow errors could cause the pipeline to fail.
 
 1. The recommended way of running the pipeline is to download and unpack a release with submodules.
     * The source code should never be modified when running our pipelines
@@ -96,14 +96,11 @@ docker run --rm \
 
 <b><i> minibwa Genome Index </i></b>
 
-The minibwa reference must be indexed with the same minibwa version used for alignment. Generate the index with `minibwa index reference.fa`. With the pipeline's simple reference contract, do not supply a separate index prefix: the command must produce `reference.fa.l2b` and `reference.fa.mbw` next to the FASTA, and `reference_fasta_minibwa` must point to `reference.fa`. BWA-MEM2 indexes cannot be reused by minibwa.
-
-> minibwa currently does not properly support alternate contigs. Use a reference without alternate contigs.
+The minibwa reference must be indexed with the same minibwa version used for alignment. Generate the index with `minibwa index reference.fa`. With the pipeline's simple reference contract, do not supply a separate index prefix: the command must produce `reference.fa.l2b` and `reference.fa.mbw` next to the FASTA, and `reference_fasta_minibwa` must point to `reference.fa`. BWA-MEM2 indexes cannot be reused by minibwa. Use a reference without alternate contigs (see [Developer's Notes](#Overview)).
 
 <b><i> HISAT2 Genome Index </i></b>
-The reference genome index must be generated from HISAT2 using [hisat2-build](http://daehwankimlab.github.io/hisat2/howto/). When passing the hisat2 index to the config, only the path up to the prefix(basename) must be specified:
 
-> The basename is the name of any of the index files up to but not including the final .1.ht2 / etc. hisat2 looks for the specified index first in the current directory, then in the directory specified in the HISAT2_INDEXES environment variable.
+The reference genome index must be generated from HISAT2 using [hisat2-build](http://daehwankimlab.github.io/hisat2/howto/). Set `hisat2_index_prefix` to the index basename: the path to any of the index files up to, but not including, the final `.1.ht2`, `.2.ht2`, etc. For example, `hisat2-build genome.fa /path/to/index/genome` produces `/path/to/index/genome.1.ht2`, ..., and is configured with `hisat2_index_prefix = "/path/to/index/genome"`. The pipeline stages all `<hisat2_index_prefix>.*.ht2` files, so keep the index files together in that directory.
 
 <!-- DEPRECATED
 <b><i> Generating the config file using a script </i></b>
@@ -209,15 +206,15 @@ On successful completion, the per-process log files are archived into a single `
 | `reference_fasta_index_files_bwa` | no | path | Glob matching the BWA-MEM2 index files used by both BWA aligners. Default: `<reference_fasta_bwa>.*` |
 | `reference_fasta_minibwa` | yes for minibwa | path | Absolute path to the reference FASTA file. minibwa index files must exist at `<reference_fasta_minibwa>.l2b` and `<reference_fasta_minibwa>.mbw`. Use a reference without alternate contigs. |
 | `reference_fasta_hisat2` | yes for HISAT2 | path | Absolute path to the reference genome `fasta` file. The reference genome is used by HISAT2 for alignment. |
-| `hisat2_index_prefix` | yes for HISAT2 | path | Absolute path up to the genome index basename. The index must be generated by the `hisat2-build` command. |
+| `hisat2_index_prefix` | yes for HISAT2 | string | Absolute path up to the genome index basename. The index must be generated by the `hisat2-build` command. |
 | `aligner` | yes | list | Which aligners to use as strings in list format. Current options: `BWA-MEM2`, `BWA-MEM3`, `minibwa`, and `HISAT2`. |
-| `output_dir` | yes | path | Absolute path to the directory where the output files to be saved. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting `ucla_cds_registered_dataset_output = true` |
+| `output_dir` | yes | path | Absolute path to the directory where the output files are saved. This is ignored if the output files are directly saved to the Boutros Lab data storage registry, by setting `ucla_cds_registered_dataset_output = true` |
 | `save_intermediate_files` | yes | boolean | Save intermediate files. If yes, not only the final BAM, but also the unmerged, unsorted, and duplicates unmarked BAM files will also be saved. |
 | `cache_intermediate_pipeline_steps` | yes | boolean | Currently has no effect: process caching is always enabled, so a failed run can be resumed with Nextflow's `-resume` option. |
 | `mark_duplicates` | no | boolean | Disable processes which mark duplicates. When false, the sorted BAMs are merged and indexed with SAMtools, outputting a sorted, indexed BAM with unmarked duplicates. Recommended for high coverage targeted panel sequencing datasets. Defaults as true to mark duplicates as usual.|
 | `enable_spark` | yes | boolean | Enable use of Spark processes. When true, `MarkDuplicatesSpark` will be used. When false, `MarkDuplicates` will be used. Default value is true. |
 | `spark_temp_dir` | no | path | Path to temp dir for Spark processes. When included in the sample config file, Spark intermediate files will be saved to this directory. Defaults to `work_dir` and should only be changed for testing/development. Changing this directory to `/hot` or `/tmp` can lead to high server latency and potential disk space limitations, respectively.|
-| `spark_metrics` | no | boolean | should Spark generate *.mark_dup.metrics |
+| `spark_metrics` | no | boolean | Whether `MarkDuplicatesSpark` generates a `*.mark_dup.metrics` file. Default: `false` |
 | `work_dir` | no | path | Path of working directory for Nextflow. When included in the sample config file, Nextflow intermediate files and logs will be saved to this directory. With ucla_cds, the default is `/scratch` and should only be changed for testing/development. Changing this directory to `/hot` or `/tmp` can lead to high server latency and potential disk space limitations, respectively. |
 | `ucla_cds_registered_dataset_input` | yes | boolean | Input FASTQs are from the Boutros Lab data registry. |
 | `ucla_cds_registered_dataset_output` | yes | boolean | Enable saving final files including BAM and BAM index, and logging files directory to the Boutros Lab Data registry. |
@@ -289,6 +286,7 @@ Profiles can be selected to control which containerization system will be used. 
 This pipeline was tested using the synthesized SMC-HET dataset as well as a multi-lane real sample CPCG0196-B1, using reference genome version GRCh38. Some benchmarking has been done comparing BWA-MEM2 v2.1, v2.0, and the original BWA. BWA-MEM2 is able to reduce approximately half of the runtime comparing to the original BWA, with the output BAM almost identical. See [here](docs/benchmarking.rst) for the benchmarking.
 
 ### Validation <10.0.0>
+
 
 | metric | Result |
 |:-------|:-------|
@@ -364,7 +362,7 @@ Please see list of [Contributors](https://github.com/TheBoutrosLab/pipeline-alig
 
 ## License
 
-Authors: Benjamin Carlin, Chenghao Zhu (ChenghaoZhu@mednet.ucla.edu), Aaron Holmes (AHolmes@mednet.ucla.edu), Takafumi Yamaguchi (TYamaguchi@mednet.ucla.edu), Aakarsh Anand (AakarshAnand@mednet.ucla.edu), Yash Patel (YashPatel@mednet.ucla.edu), Joseph Salmingo (JSalmingo@mednet.ucla.edu)
+Authors: Benjamin Carlin, Chenghao Zhu, Aaron Holmes, Takafumi Yamaguchi, Aakarsh Anand, Yash Patel, Joseph Salmingo, Nicole Zeltser, Jieun Oh, Jaron Arbet
 
 Align-DNA is licensed under the GNU General Public License version 2. See the file LICENSE for the terms of the GNU GPL license.
 
