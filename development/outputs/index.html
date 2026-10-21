@@ -106,7 +106,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Outputs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4a3e033d80f068a07387838ffdef3e24349cad20/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3b88c690bc37dfa96f8a6414edc8379cc16994a3/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -116,8 +116,19 @@
               
                 <h2 id="outputs">Outputs</h2>
 <blockquote>
-<p>Separate BWA-MEM2, BWA-MEM3, minibwa, and HISAT2 folders are created for the selected aligners, while a base folder stores overall Nextflow information.</p>
+<p>A separate folder is created for each selected aligner, named with the aligner and its version (e.g. <code>BWA-MEM2-2.3</code>, <code>BWA-MEM3-0.15.0</code>, <code>minibwa-0.7</code>, <code>HISAT2-2.2.1</code>), while a log folder stores overall Nextflow information.</p>
 </blockquote>
+<p>Outputs are saved under <code>&lt;output_dir&gt;/align-DNA-&lt;pipeline version&gt;/&lt;sample_id&gt;/</code>:</p>
+<pre><code>&lt;output_dir&gt;/align-DNA-&lt;pipeline version&gt;/&lt;sample_id&gt;/
+├── &lt;ALIGNER&gt;-&lt;aligner version&gt;/
+│   ├── output/          # final BAM, BAM index, and SHA512 checksums
+│   ├── intermediate/    # intermediate BAMs (only if save_intermediate_files = true)
+│   ├── validation/      # PipeVal input and output validation results
+│   └── QC/              # duplicate marking metrics
+└── log-align-DNA-&lt;pipeline version&gt;-&lt;timestamp&gt;/
+    ├── nextflow-log/    # Nextflow report, timeline, trace, and params
+    └── process-log.tar.gz
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -129,31 +140,52 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>.bam</code></td>
-<td style="text-align: left;">Aligned, sorted, filtered and if needed, merged, BAM file(s)</td>
-<td style="text-align: left;">align-DNA-<em>DATE</em>/<em>ALIGNER</em></td>
+<td style="text-align: left;">Aligned, sorted, merged, and (if <code>mark_duplicates = true</code>) duplicate-marked BAM file</td>
+<td style="text-align: left;"><em>ALIGNER</em>/output</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>.bam.bai</code></td>
-<td style="text-align: left;">Index file for each BAM file</td>
-<td style="text-align: left;">align-DNA-<em>DATE</em>/<em>ALIGNER</em></td>
+<td style="text-align: left;">Index file for the BAM file</td>
+<td style="text-align: left;"><em>ALIGNER</em>/output</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>.bam</code> files and metrics files</td>
-<td style="text-align: left;">Intermediate outputs for each scientific tool (OPTIONAL)</td>
-<td style="text-align: left;">align-DNA-<em>DATE</em>/<em>ALIGNER</em></td>
+<td style="text-align: left;"><code>.bam.sha512</code>, <code>.bam.bai.sha512</code></td>
+<td style="text-align: left;">SHA512 checksums for the BAM and BAM index files</td>
+<td style="text-align: left;"><em>ALIGNER</em>/output</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>report.html</code>, <code>timeline.html</code> and <code>trace.txt</code></td>
-<td style="text-align: left;">A Nextflowreport, timeline and trace files</td>
-<td style="text-align: left;">align-DNA-<em>DATE</em>/log</td>
+<td style="text-align: left;"><code>.bam</code> files</td>
+<td style="text-align: left;">Intermediate lane-level BAM files from alignment and sorting (OPTIONAL, <code>save_intermediate_files = true</code>)</td>
+<td style="text-align: left;"><em>ALIGNER</em>/intermediate</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>log.command.*</code></td>
-<td style="text-align: left;">Process specific logging files created by Nextflow.</td>
-<td style="text-align: left;">align-DNA-<em>DATE</em></td>
+<td style="text-align: left;"><code>input_validation.txt</code>, <code>output_validation.txt</code></td>
+<td style="text-align: left;">PipeVal validation results for the input and output files</td>
+<td style="text-align: left;"><em>ALIGNER</em>/validation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>.mark_dup.metrics</code></td>
+<td style="text-align: left;">Duplicate marking metrics (OPTIONAL: Picard with <code>save_intermediate_files = true</code>, or Spark with <code>spark_metrics = true</code>)</td>
+<td style="text-align: left;"><em>ALIGNER</em>/QC</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>report.html</code>, <code>timeline.html</code>, <code>trace.txt</code></td>
+<td style="text-align: left;">Nextflow report, timeline and trace files</td>
+<td style="text-align: left;">log-align-DNA-<em>VERSION</em>-<em>TIMESTAMP</em>/nextflow-log</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>params.json</code></td>
+<td style="text-align: left;">All pipeline parameters used for the run</td>
+<td style="text-align: left;">log-align-DNA-<em>VERSION</em>-<em>TIMESTAMP</em>/nextflow-log</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>process-log.tar.gz</code></td>
+<td style="text-align: left;">Process-specific <code>.command.*</code> logging files created by Nextflow, archived on successful completion (an uncompressed <code>process-log</code> directory remains if the run fails)</td>
+<td style="text-align: left;">log-align-DNA-<em>VERSION</em>-<em>TIMESTAMP</em></td>
 </tr>
 </tbody>
 </table>
+<p>When <code>ucla_cds_registered_dataset_output = true</code>, outputs are instead saved to the Boutros Lab data registry under <code>&lt;ucla_cds_data_dir&gt;/&lt;disease&gt;/&lt;dataset_id&gt;/&lt;patient_id&gt;/&lt;sample_id&gt;/DNA/&lt;ucla_cds_technology&gt;/aligned/&lt;reference genome version&gt;/</code>, with each aligner's outputs in <code>&lt;ALIGNER&gt;-&lt;aligner version&gt;/BAM-&lt;uuid&gt;/</code>.</p>
 <hr />
               
             </div>

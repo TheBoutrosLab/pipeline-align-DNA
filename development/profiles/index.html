@@ -106,7 +106,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Profiles</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/4a3e033d80f068a07387838ffdef3e24349cad20/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3b88c690bc37dfa96f8a6414edc8379cc16994a3/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -115,8 +115,9 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="profiles">Profiles</h2>
-<p>Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using <code>-profile</code>. Available profiles:</p>
+<p>Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the nextflow run command using <code>-profile</code>. When no profile is given, the <code>standard</code> profile is used, which runs with Docker. Available profiles:</p>
 <ul>
+<li><code>standard</code> - Default; same as <code>docker</code></li>
 <li><code>docker</code> - Use Docker as the containerization system</li>
 <li><code>apptainer</code> - Use Apptainer as the containerization system</li>
 <li><code>singularity</code> - Use Singularity as the containerization system</li>
