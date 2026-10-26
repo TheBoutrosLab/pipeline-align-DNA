@@ -7,12 +7,14 @@ process run_MarkDuplicate_Picard {
    publishDir path: "${META.bam_output_dir}",
       pattern: "*.{bam,bai}",
       mode: 'copy',
-      saveAs: { filename -> (file(filename).getExtension() == "bai") ? "${file(filename).baseName}.bam.bai" : "${filename}" }
+      saveAs: { filename -> (file(filename).getExtension() == "bai") ? "${file(filename).baseName}.bam.bai" : "${filename}" },
+      failOnError: false
 
    publishDir path: "${META.qc_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
       pattern: "*.metrics",
       enabled: params.save_intermediate_files,
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 

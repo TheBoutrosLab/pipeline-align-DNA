@@ -13,12 +13,14 @@ process run_MarkDuplicatesSpark_GATK  {
 
    publishDir path: "${META.bam_output_dir}",
       pattern: "*.bam{,.bai}",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    publishDir path: "${META.qc_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
       pattern: "*.metrics",
       mode: 'copy',
-      enabled: params.spark_metrics
+      enabled: params.spark_metrics,
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 

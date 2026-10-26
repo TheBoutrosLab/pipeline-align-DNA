@@ -7,7 +7,8 @@ process run_sort_SAMtools  {
    publishDir path: "${META.intermediate_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files && params.mark_duplicates,
       pattern: "*sorted.bam",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" },
       log_dir_suffix: { "/${library}/${lane}" }
@@ -71,7 +72,8 @@ process run_merge_SAMtools  {
    
    publishDir path: "${META.bam_output_dir}",
       pattern: "${merged_bam_output_filename}{,.bai}",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
 

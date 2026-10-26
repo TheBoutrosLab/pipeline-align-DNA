@@ -18,7 +18,8 @@ process align_DNA_HISAT2 {
    publishDir path: "${META.output_dir_base}/${params.hisat2_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files,
       pattern: "*.bam",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[1].replace('_', '-')}" }
    ext log_dir_suffix: { "/${library}/${lane}" }
