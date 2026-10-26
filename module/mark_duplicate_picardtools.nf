@@ -2,7 +2,6 @@
 // mark duplicates with picard
 process run_MarkDuplicate_Picard {
    container params.docker_image_picardtools
-   containerOptions "${params.container_mount_flag} ${params.work_dir}:/temp_dir"
 
    publishDir path: "${META.bam_output_dir}",
       pattern: "*.{bam,bai}",
@@ -16,7 +15,8 @@ process run_MarkDuplicate_Picard {
       mode: 'copy',
       failOnError: false
 
-   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" },
+      containerOptions: { "${params.container_mount_flag} ${META.work_dir}:/temp_dir" }
 
    input:
       val(META)

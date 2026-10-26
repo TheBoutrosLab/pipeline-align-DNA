@@ -9,7 +9,6 @@
 */
 process run_MarkDuplicatesSpark_GATK  {
    container params.docker_image_gatk
-   containerOptions "${params.container_mount_flag} ${params.work_dir}:/temp_dir ${params.container_mount_flag} ${params.spark_temp_dir}:/spark_temp_dir ${workflow.profile.contains('docker') ? '-u nobody' : ''}"
 
    publishDir path: "${META.bam_output_dir}",
       pattern: "*.bam{,.bai}",
@@ -22,7 +21,10 @@ process run_MarkDuplicatesSpark_GATK  {
       enabled: params.spark_metrics,
       failOnError: false
 
-   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" },
+      containerOptions: {
+         "${params.container_mount_flag} ${META.work_dir}:/temp_dir ${params.container_mount_flag} ${META.spark_temp_dir}:/spark_temp_dir ${workflow.profile.contains('docker') ? '-u nobody' : ''}"
+      }
 
    input:
       val(META)

@@ -91,7 +91,9 @@ workflow align_DNA_BWA_MEM3_workflow {
          log_output_dir: aligner_log_dir,
          log_dir_prefix: params.bwa_mem3_version,
          qc_output_dir: aligner_qc_dir,
-         checksum_output_dir: aligner_output_dir
+         checksum_output_dir: aligner_output_dir,
+         work_dir: params.work_dir,
+         spark_temp_dir: params.spark_temp_dir
          ])
 
       input_validation = ich_samples_validate.mix(
