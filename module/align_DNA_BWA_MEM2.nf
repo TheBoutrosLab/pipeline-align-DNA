@@ -2,16 +2,16 @@
 // While this is normally considered to go against the best practices for processes,
 // here it actually saves cost, time, and memory to directly pipe the output into
 // samtools due to the large size of the uncompressed SAM files.
-include { generate_standard_filename } from '../external/nextflow-modules/modules/common/generate_standardized_filename/main.nf'
+include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
 include { run_sort_SAMtools ; run_merge_SAMtools } from './samtools.nf'
 include {
    run_validate_PipeVal as validate_input_BWA_MEM2
    run_validate_PipeVal as validate_output_BWA_MEM2
-   } from '../external/nextflow-modules/modules/PipeVal/validate/main.nf'
+   } from '../external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf'
 include { run_MarkDuplicate_Picard } from './mark_duplicate_picardtools.nf'
 include { run_MarkDuplicatesSpark_GATK } from './mark_duplicates_spark.nf'
 include { generate_sha512sum } from './check_512sum.nf'
-include { remove_intermediate_files } from '../external/nextflow-modules/modules/common/intermediate_file_removal/main.nf'
+include { remove_intermediate_files } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 
 process align_DNA_BWA_MEM2 {
    container params.docker_image_bwa_and_samtools
