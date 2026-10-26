@@ -12,10 +12,10 @@ process generate_sha512sum {
 
    input:
       val(META)
-      file(input_file)
+      path(input_file)
 
    output:
-      file("${input_file.getName()}.sha512")
+      path("${input_file.getName()}.sha512")
 
    script:
    """
