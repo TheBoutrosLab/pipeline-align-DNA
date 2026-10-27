@@ -36,7 +36,7 @@ process run_MarkDuplicatesSpark_GATK  {
    output:
       path bam_output_filename, emit: bam
       path "*.bai", emit: bam_index
-      path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics" optional true
+      path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics", optional: true
 
    //Update tempdir permissions for user 'nobody'
    beforeScript "chmod 777 `pwd`; \
