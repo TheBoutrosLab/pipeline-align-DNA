@@ -10,7 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- Support Nextflow `25.10.5`
+- Update to support Nextflow v25.10.5
 
 ## [11.7.1] - 2026-10-22
 
