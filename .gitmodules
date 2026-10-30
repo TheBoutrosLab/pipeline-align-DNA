@@ -1,9 +1,9 @@
-[submodule "external/nextflow-modules"]
-	path = external/nextflow-modules
+[submodule "external/pipeline-Nextflow-module"]
+	path = external/pipeline-Nextflow-module
 	url = git@github.com:TheBoutrosLab/pipeline-Nextflow-module.git
 	branch = main
-[submodule "external/nextflow-config"]
-	path = external/nextflow-config
+[submodule "external/pipeline-Nextflow-config"]
+	path = external/pipeline-Nextflow-config
 	url = git@github.com:TheBoutrosLab/pipeline-Nextflow-config.git
 	branch = main
 [submodule "lib"]

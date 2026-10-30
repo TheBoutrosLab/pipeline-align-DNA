@@ -1,6 +1,4 @@
 
-nextflow.enable.dsl=2
-
 log.info """\
    ===================================
    P I P E L I N E - A L I G N - D N A
@@ -66,7 +64,7 @@ workflow {
 
    // get the input fastq pairs
    Channel
-      .from(params.input.FASTQ)
+      .fromList(params.input.FASTQ)
       .map { row ->
 
          // the library, sample and lane are used as keys downstream to group into
