@@ -106,7 +106,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">How To Run</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/README.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/README.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -127,19 +127,19 @@ Currently supported Nextflow versions: <code>25.10.5</code> (requires Java 17 or
 <p>The source code should never be modified when running our pipelines</p>
 </li>
 <li>
-<p>Create a config file for input, output, and parameters. An example for a config file can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/config/template.config">here</a>. See <a href="../inputs/#Inputs">Inputs</a> for the detailed description of each variable in the config file.</p>
+<p>Create a config file for input, output, and parameters. An example for a config file can be found <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/config/template.config">here</a>. See <a href="../inputs/#Inputs">Inputs</a> for the detailed description of each variable in the config file.</p>
 </li>
 <li>
 <p>Do not directly modify the source <code>template.config</code>, but rather you should copy it from the pipeline release folder to your project-specific folder and modify it there</p>
 </li>
 <li>
-<p>Create the input csv using the <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/input/align-DNA.input.csv">template</a>. The example csv is a single-lane sample, however this pipeline can take multi-lane sample as well, with each record in the csv file representing a lane (a pair of fastq). All records must have the same value in the <strong>sample</strong> column. See <a href="../inputs/#Inputs">Inputs</a> for detailed description of each column. All columns must exist in order to run the pipeline successfully.</p>
+<p>Create the input csv using the <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/input/align-DNA.input.csv">template</a>. The example csv is a single-lane sample, however this pipeline can take multi-lane sample as well, with each record in the csv file representing a lane (a pair of fastq). All records must have the same value in the <strong>sample</strong> column. See <a href="../inputs/#Inputs">Inputs</a> for detailed description of each column. All columns must exist in order to run the pipeline successfully.</p>
 </li>
 <li>
 <p>Again, do not directly modify the source template csv file.  Instead, copy it from the pipeline release folder to your project-specific folder and modify it there.</p>
 </li>
 <li>
-<p>Inputs can also be provided in YAML format using the <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/input/align-DNA.input.yaml">YAML template</a> and passed to the pipeline using <code>-params-file</code>.</p>
+<p>Inputs can also be provided in YAML format using the <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/input/align-DNA.input.yaml">YAML template</a> and passed to the pipeline using <code>-params-file</code>.</p>
 </li>
 <li>
 <p>The pipeline can be executed locally using the command below:</p>
@@ -149,7 +149,7 @@ Currently supported Nextflow versions: <code>25.10.5</code> (requires Java 17 or
 </code></pre>
 <ul>
 <li><code>path/to/main.nf</code> is the <code>main.nf</code> at the root of the unpacked release, for example: <code>/path/to/pipeline-align-DNA-11.7.0/main.nf</code></li>
-<li><code>path/to/sample-specific.config</code> is the path to where you saved your project-specific copy of <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/config/template.config">template.config</a></li>
+<li><code>path/to/sample-specific.config</code> is the path to where you saved your project-specific copy of <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/config/template.config">template.config</a></li>
 </ul>
 <p><b><i> BWA-MEM2 / BWA-MEM3 Genome Index </i></b></p>
 <p>BWA-MEM3 uses the same reference and indexes as BWA-MEM2. Both read <code>reference_fasta_bwa</code> and <code>reference_fasta_index_files_bwa</code> (default: <code>&lt;reference_fasta_bwa&gt;.*</code>); no separate MEM3 index is needed.</p>
@@ -161,7 +161,7 @@ Currently supported Nextflow versions: <code>25.10.5</code> (requires Java 17 or
     bwa-mem2 index /path/to/reference/genome.fa
 </code></pre>
 <blockquote>
-<p>The <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/3c8eeb1b31eb7ac055b2e5318c0283fad1487f1c/module/generate-genome-index.nf"><code>generate-genome-index.nf</code></a> helper pipeline is deprecated. It is written in Nextflow DSL1, which current Nextflow versions cannot run, and it uses BWA-MEM2 <code>2.2.1</code>.</p>
+<p>The <a href="https://github.com/TheBoutrosLab/pipeline-align-DNA/blob/76348722717db7d3caaba83a30a61860e30c325a/module/generate-genome-index.nf"><code>generate-genome-index.nf</code></a> helper pipeline is deprecated. It is written in Nextflow DSL1, which current Nextflow versions cannot run, and it uses BWA-MEM2 <code>2.2.1</code>.</p>
 <p>BWA-MEM2 and BWA-MEM3 expect the reference genome index to be at the same directory as the reference genome FASTA, so it's important to keep them together.</p>
 </blockquote>
 <p><b><i> minibwa Genome Index </i></b></p>
