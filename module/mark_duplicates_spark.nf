@@ -9,18 +9,22 @@
 */
 process run_MarkDuplicatesSpark_GATK  {
    container params.docker_image_gatk
-   containerOptions "${params.container_mount_flag} ${params.work_dir}:/temp_dir ${params.container_mount_flag} ${params.spark_temp_dir}:/spark_temp_dir ${workflow.profile.contains('docker') ? '-u nobody' : ''}"
 
    publishDir path: "${META.bam_output_dir}",
       pattern: "*.bam{,.bai}",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    publishDir path: "${META.qc_output_dir}/${task.process.split(':')[1].replace('_', '-')}",
       pattern: "*.metrics",
       mode: 'copy',
-      enabled: params.spark_metrics
+      enabled: params.spark_metrics,
+      failOnError: false
 
-   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" }
+   ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}" },
+      containerOptions: {
+         "${params.container_mount_flag} ${META.work_dir}:/temp_dir ${params.container_mount_flag} ${META.spark_temp_dir}:/spark_temp_dir ${workflow.profile.contains('docker') ? '-u nobody' : ''}"
+      }
 
    input:
       val(META)
@@ -32,7 +36,7 @@ process run_MarkDuplicatesSpark_GATK  {
    output:
       path bam_output_filename, emit: bam
       path "*.bai", emit: bam_index
-      path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics" optional true
+      path "${bam_output_filename.substring(0, bam_output_filename.length()-4)}.mark_dup.metrics", optional: true
 
    //Update tempdir permissions for user 'nobody'
    beforeScript "chmod 777 `pwd`; \

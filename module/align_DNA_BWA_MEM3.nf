@@ -1,21 +1,22 @@
 // Alignment and SAM-to-BAM conversion are combined to avoid writing large uncompressed SAM files.
-include { generate_standard_filename } from '../external/nextflow-modules/modules/common/generate_standardized_filename/main.nf'
+include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
 include { run_sort_SAMtools ; run_merge_SAMtools } from './samtools.nf'
 include {
    run_validate_PipeVal as validate_input_BWA_MEM3
    run_validate_PipeVal as validate_output_BWA_MEM3
-   } from '../external/nextflow-modules/modules/PipeVal/validate/main.nf'
+   } from '../external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf'
 include { run_MarkDuplicate_Picard } from './mark_duplicate_picardtools.nf'
 include { run_MarkDuplicatesSpark_GATK } from './mark_duplicates_spark.nf'
 include { generate_sha512sum } from './check_512sum.nf'
-include { remove_intermediate_files } from '../external/nextflow-modules/modules/common/intermediate_file_removal/main.nf'
+include { remove_intermediate_files } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 
 process align_DNA_BWA_MEM3 {
    container params.docker_image_bwa_mem3_and_samtools
    publishDir path: "${META.output_dir_base}/${params.bwa_mem3_version}/intermediate/${task.process.split(':')[1].replace('_', '-')}",
       enabled: params.save_intermediate_files,
       pattern: "*.bam",
-      mode: 'copy'
+      mode: 'copy',
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[1].replace('_', '-')}" },
       log_dir_suffix: { "/${library}/${lane}" }
@@ -90,7 +91,9 @@ workflow align_DNA_BWA_MEM3_workflow {
          log_output_dir: aligner_log_dir,
          log_dir_prefix: params.bwa_mem3_version,
          qc_output_dir: aligner_qc_dir,
-         checksum_output_dir: aligner_output_dir
+         checksum_output_dir: aligner_output_dir,
+         work_dir: params.work_dir,
+         spark_temp_dir: params.spark_temp_dir
          ])
 
       input_validation = ich_samples_validate.mix(

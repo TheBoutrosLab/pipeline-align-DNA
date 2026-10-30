@@ -5,16 +5,17 @@ process generate_sha512sum {
    publishDir path: "${META.checksum_output_dir}",
       mode: "copy",
       pattern: "*.sha512",
-      saveAs: { filename -> (filename.endsWith(".bai.sha512") && !filename.endsWith(".bam.bai.sha512")) ? "${file(file(filename).baseName).baseName}.bam.bai.sha512" : "${filename}"}
+      saveAs: { filename -> (filename.endsWith(".bai.sha512") && !filename.endsWith(".bam.bai.sha512")) ? "${file(file(filename).baseName).baseName}.bam.bai.sha512" : "${filename}"},
+      failOnError: false
 
    ext log_dir: { "${META.log_dir_prefix}/${task.process.split(':')[-1].replace('_', '-')}-${task.index}" }
 
    input:
       val(META)
-      file(input_file)
+      path(input_file)
 
    output:
-      file("${input_file.getName()}.sha512")
+      path("${input_file.getName()}.sha512")
 
    script:
    """

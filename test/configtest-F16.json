@@ -1,5 +1,5 @@
 {
-  "nextflow_version": "23.10.0",
+  "nextflow_version": "25.10.5",
   "config": [
     "test/global.config",
     "test/a_mini_n2-picard_yaml.config"
@@ -148,7 +148,7 @@
       "mark_duplicates": true,
       "max_cpus": "16",
       "max_memory": "31 GB",
-      "max_time": "24d 20h 31m 24s",
+      "max_time": "1000d",
       "min_cpus": "1",
       "min_memory": "1 MB",
       "min_time": "1s",
@@ -233,7 +233,7 @@
         "3": "3",
         "closure": "closure()"
       },
-      "echo": true,
+      "debug": true,
       "errorStrategy": {
         "1": "terminate",
         "2": "terminate",

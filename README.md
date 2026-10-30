@@ -48,7 +48,7 @@ The align-DNA Nextflow pipeline aligns paired-end data using [BWA-MEM2](https://
 ## How To Run
 
 **Requirements**
-Currently supported Nextflow versions: `23.10.0`
+Currently supported Nextflow versions: `25.10.5` (requires Java 17 or later)
 
 Below is a summary of how to run the pipeline.  See [here](https://uclahs-cds.atlassian.net/wiki/spaces/BOUTROSLAB/pages/3197004/How+to+run+a+nextflow+pipeline) for full instructions.
 
